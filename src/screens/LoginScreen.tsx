@@ -1,13 +1,14 @@
 import React, { FC, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
 import { Input, Button } from '../components';
-import SignUpScreen from './SignUpScreen';
+
 
 const LoginScreen: FC = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -17,8 +18,13 @@ const LoginScreen: FC = (props) => {
       <Button title='Ingresar' onPress={() => alert('Pressed')} />
       <View style={styles.signUpText}>
         <Text style={{marginHorizontal: 5}}>No tienes una cuenta? </Text>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={() => props.navigation.navigate('Sign')}>
           <Text style={{color: 'rgba(81,135,200,1)'}}>Registrate aqui</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+      <TouchableOpacity>
+          <Text style={{color: 'rgba(81,135,200,1)'}}>Recupera tu contraseña</Text>
         </TouchableOpacity>
       </View>
     </View>

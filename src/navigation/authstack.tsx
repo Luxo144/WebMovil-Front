@@ -1,15 +1,15 @@
 import React,{FC} from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../screens/LoginScreen";
-import SignUpScreen from "../screens/LoginScreen";
+import SignUpScreen from "../screens/SignUpScreen";
 
 const {Navigator,Screen} = createStackNavigator();
 
 const AuthStack : FC = () => {
     return (
-        <Navigator>
+        <Navigator screenOptions={{headerShown: false}}>
             <Screen name = "Login" component={LoginScreen}/>
-            <Screen name = "SingUp" component={SignUpScreen}/>
+            <Screen name = "Sign" component={SignUpScreen}/>
         </Navigator>
     )
 }

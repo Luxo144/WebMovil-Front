@@ -1,39 +1,27 @@
-import React, {FC, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, { FC, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Input, Button } from '../components';
 
-const RegisterScreen:FC = (props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleRegister = () => {
-    // Aquí debes agregar la lógica para registrar al usuario
-    // Puedes enviar los datos de registro a tu servidor o base de datos
-    // y manejar la respuesta en consecuencia
-    console.log('Registrando usuario con email:', email);
-    console.log('Contraseña:', password);
-
-    // Simplemente limpiamos los campos de entrada después del registro
-    setEmail('');
-    setPassword('');
-  };
+const SignUpScreen:FC = (props) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Registrarse</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
-      <Button title="Registrarse" onPress={handleRegister} />
+      <Text>Sign Up Screen</Text>
+      <Input placeholder='Nombre' onChangeText={(text) => setName} />
+      <Input placeholder='Correo Electronico' onChangeText={(text) => setEmail} />
+      <Input placeholder='Contraseña' secureTextEntry onChangeText={(text) => setPassword} />
+      <Button title='Registrarse' onPress={() => alert('Pressed')} />
+      <View style={styles.loginText}>
+        <Text style={{marginHorizontal: 5}}>Ya tienes una cuenta? </Text>
+        <TouchableOpacity onPress={() => props.navigation.navigate('Login')}>
+          <Text style={{color: 'rgba(81,135,200,1)'}}>Ingresa</Text>
+        </TouchableOpacity>
+
+      </View>
     </View>
   );
 };
@@ -42,20 +30,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
-  },
-  input: {
-    width: '80%',
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 16,
-    paddingLeft: 8,
-  },
+  loginText: {
+    flexDirection: 'row',
+    marginVertical: 20
+  }
 });
 
-export default RegisterScreen;
+export default SignUpScreen;
