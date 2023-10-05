@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Dimensions, View, StyleSheet } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput} from "react-native-gesture-handler";
 
 const { height, width } = Dimensions.get('screen');
 
@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
         width: width / 1.1,
         backgroundColor: '#e3e3e3',
         alignSelf: 'center',
-        borderRadius: 5
+        borderRadius: 5,
+        marginVertical: 10
     },
     input: {
         padding: 15

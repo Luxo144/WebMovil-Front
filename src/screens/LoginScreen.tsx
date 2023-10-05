@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
 import { Input, Button } from '../components';
 
 
@@ -23,7 +22,7 @@ const LoginScreen: FC = (props) => {
         </TouchableOpacity>
       </View>
       <View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => props.navigation.navigate('PassRec')}>
           <Text style={{color: 'rgba(81,135,200,1)'}}>Recupera tu contraseña</Text>
         </TouchableOpacity>
       </View>
