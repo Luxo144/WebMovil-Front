@@ -6,16 +6,6 @@ import AppStack from './appstack';
 
 const MainNav : FC = () => {
     const [user,setUser] = useState<any>(null);
-
-/* login con el backend
-
-    const bootstrap = () => {
-        if(_user){
-            setUser(_user);
-        }
-    }
-*/
-
     return(
         <NavigationContainer>           
             {user == null ? <AuthStack/> : <AppStack/> }

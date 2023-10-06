@@ -1,20 +1,40 @@
 import React, { FC, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Button } from '../components';
-
+import { login } from '../services/auth.services';
 
 const LoginScreen: FC = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   //const navigation = useNavigation();
 
+  const handleSubmit = async () => {
+    if (email && password) { 
+      try {
+        const response = await login({ email, password });
+        console.log(response); 
+        Alert.alert('Éxito', 'Inicio de sesión exitoso.');
+        // - Guardar el token en el almacenamiento local.
+
+        props.navigation.navigate('Home')
+        
+
+      } catch (error) {
+        console.error('Error al intentar iniciar sesión:', error);
+        Alert.alert('Error', 'Hubo un error al intentar iniciar sesión. Por favor, revisa tus credenciales.');
+      }
+    } else {
+      Alert.alert('Campos requeridos', 'El correo electrónico y la contraseña son obligatorios.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text> Login Screen </Text>
-      <Input placeholder='Correo Electronico' onChangeText={(text) => setEmail} />
-      <Input placeholder='Contraseña' secureTextEntry onChangeText={(text) => setPassword} />
-      <Button title='Ingresar' onPress={() => alert('Pressed')} />
+      <Input placeholder='Correo Electronico' onChangeText={(text) => setEmail(text)} />
+      <Input placeholder='Contraseña' secureTextEntry onChangeText={(text) => setPassword(text)} />
+      <Button title='Ingresar' onPress={handleSubmit} />
       <View style={styles.signUpText}>
         <Text style={{marginHorizontal: 5}}>No tienes una cuenta? </Text>
         <TouchableOpacity onPress={() => props.navigation.navigate('Sign')}>
