@@ -2,14 +2,16 @@ import React, {FC, useEffect,useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './authstack';
 import AppStack from './appstack';
-
+import AuthContext from './AuthContext';
 
 const MainNav : FC = () => {
-    const [user,setUser] = useState<any>(null);
+    const [user,setUser] = useState(true);
     return(
-        <NavigationContainer>           
-            {user == null ? <AuthStack/> : <AppStack/> }
-        </NavigationContainer>
+        <AuthContext.Provider value={{ user, setUser }}>
+            <NavigationContainer>           
+                {user ? <AppStack/>:<AuthStack/> }
+            </NavigationContainer>
+        </AuthContext.Provider>
     )
 } 
 

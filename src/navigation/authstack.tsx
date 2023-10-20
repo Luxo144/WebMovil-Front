@@ -12,8 +12,7 @@ const AuthStack : FC = () => {
         <Navigator screenOptions={{headerShown: false}}>
             <Screen name = "Login" component={LoginScreen}/>
             <Screen name = "Sign" component={SignUpScreen}/>
-            <Screen name = "PassRec" component={PassRecScreen}/> 
-            <Screen name = "Home" component={HomeScreen}/>         
+            <Screen name = "PassRec" component={PassRecScreen}/>         
         </Navigator>
     )
 }
