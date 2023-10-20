@@ -8,6 +8,7 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import AddTeamScreen from "../screens/AddTeamScreen";
+import EditTeamScreen from "../screens/EditTeamScreen";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
@@ -79,7 +80,7 @@ const ProfileStackScreen : FC = (props)=> {
     );
 };
 
-const TeamStackScreen = () =>{
+const TeamStackScreen:FC = (props) =>{
     return(
         <TeamStack.Navigator>
             <TeamStack.Screen
@@ -94,7 +95,13 @@ const TeamStackScreen = () =>{
             options={{
             title: 'Añadir equipo',
             }}/>
-
+            <TeamStack.Screen
+            name="EditTeam"
+            component={EditTeamScreen}
+            options={{
+            title: 'Editar equipo',
+            }}/>
+           
 
 
 
