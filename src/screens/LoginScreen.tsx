@@ -1,26 +1,28 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState,useContext } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Button, Loader } from '../components';
 import { login } from '../services/auth.services';
+import AuthContext from '../navigation/AuthContext';
 
 const LoginScreen: FC = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUser } = useContext(AuthContext);
  
 
   const handleSubmit = async () => {
     if (email && password) { 
       try {
-        setLoading(true);
+        //setLoading(true);
 
         const response = await login({ email, password });
         console.log(response); 
         Alert.alert('Éxito', 'Inicio de sesión exitoso.');
         // - Guardar el token en el almacenamiento local.
 
-        props.navigation.navigate('Home')
+        setUser(true);
         
 
       } catch (error) {
@@ -36,7 +38,7 @@ const LoginScreen: FC = (props) => {
   };
 
   return (
-    <>
+    
     <View style={styles.container}>
       <Text> Login Screen </Text>
       <Input placeholder='Correo Electronico' onChangeText={(text) => setEmail(text)} />
@@ -55,8 +57,8 @@ const LoginScreen: FC = (props) => {
         </TouchableOpacity>
       </View>
     </View>
-    {loading ? <Loader/> : null}
-    </>
+    
+    
   );
 };
 

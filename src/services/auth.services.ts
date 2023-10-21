@@ -2,7 +2,7 @@ import { RegisterData, LoginData, LoginResponse, PasswordResetRequest, PasswordR
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jsonwebtoken';
 
-const BASE_URL = 'http://10.0.2.2:3000/auth';
+const BASE_URL = 'http://10.0.2.2:3002/auth';
 const TOKEN_STORAGE_KEY = '@auth_token';
 
 export const storeToken = async (token: string): Promise<void> => {
@@ -126,6 +126,26 @@ export const getUserDetails = async (userId: number, token: string): Promise<Par
   };
   return filteredData;
 };
+
+
+export const getUserDetailsCombined = async (token: string): Promise<any> => {
+  const response = await fetch(`http://10.0.2.2:3002/auth/user-details`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      },
+  });
+
+  if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error fetching combined user details');
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 
 
 export const createProfile = async (profileData: CreateProfileData): Promise<User> => {

@@ -1,14 +1,38 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getToken } from '../services/auth.services';
+import { getUserDetailsCombined } from '../services/auth.services';
 
 const ProfileScreen = () =>{
 
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [userDetails, setUserDetails] = useState<any | null>(null);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = await getToken(); // Asegúrate de esperar la promesa aquí.
+                console.log(token)
+                if (token) { // Verifica que el token no sea null antes de proceder.
+                    const details = await getUserDetailsCombined(token);
+                    setUserDetails(details);
+                } else {
+                    console.error("Token is null.");
+                }
+            } catch (error) {
+                console.error("Error fetching user details:", error);
+            }
+        };
+    
+        fetchData(); // Invoca la función fetchData.
+    }, []);
+    
 
+    if (!userDetails) {
+        return <Text>Loading...</Text>; // Puedes mostrar un indicador de carga aquí.
+    }
 
+    console.log(userDetails);
     
     return(
       <View style={styles.container}>
@@ -18,27 +42,27 @@ const ProfileScreen = () =>{
         <View style={styles.userInfoSection}>
           <View style={styles.row}>
           <Icon name='account-box' color='#777777' size={20}/>           
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>Nick</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>{userDetails.nickname}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='card-account-details' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>Nombre</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>{userDetails.name_}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='email' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >correo@gmail.com</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.email}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='phone-dial' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >+569 11111111</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.phone}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='source-commit-start-next-local' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >ubicacion</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.ubication}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='clipboard-text-outline' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >trabajo</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.job_title}</Text>
           </View>
         </View>
       </View>

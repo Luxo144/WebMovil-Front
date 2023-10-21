@@ -10,12 +10,12 @@ const EditProfileScreen: FC = () => {
     // En un escenario real, obtendrías estos valores iniciales de algún lugar, 
     // como una tienda global, una base de datos, etc.
     const [image, setImage] = useState("https://via.placeholder.com/100");
-    const [nick, setNick] = useState("Nick");
-    const [nombre, setNombre] = useState("Nombre");
-    const [email, setEmail] = useState("correo@gmail.com");
-    const [phone, setPhone] = useState("+569 11111111");
-    const [ubicacion, setUbicacion] = useState("ubicacion");
-    const [trabajo, setTrabajo] = useState("trabajo");
+    const [nick, setNick] = useState("");
+    const [nombre, setNombre] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState(" ");
+    const [ubicacion, setUbicacion] = useState("");
+    const [trabajo, setTrabajo] = useState("");
 
     const handleUpdate = () => {
         setImage("https://via.placeholder.com/150");

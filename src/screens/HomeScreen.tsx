@@ -15,7 +15,9 @@ const HomeScreen:FC = (props) => {
     props.navigation.navigate('EditTeam', { teamId });
   };
 
-  const deleteTeam = (teamId) => {}
+  const deleteTeam = (teamId) => {
+    setTeams(teams.filter(team => team.id !== teamId));
+  }
 
   const handleDelete = (teamId) => {
     Alert.alert(
