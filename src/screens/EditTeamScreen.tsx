@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,FC} from 'react';
 import { View, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const EditTeamScreen = ({ route, navigation }) => {
+const EditTeamScreen:FC = (props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
   // Suponemos que pasas el equipo a editar a través de la navegación
-  useEffect(() => {
-    if (route.params && route.params.team) {
-      setName(route.params.team.name);
-      setDescription(route.params.team.description);
-    }
-  }, [route.params]);
+
 
   const handleEdit = () => {
-
+    
   };
   return (
     <ScrollView style={styles.container}>

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Dimensions, View, StyleSheet } from "react-native";
+import { Dimensions, View, StyleSheet,TextStyle } from "react-native";
 import { TextInput} from "react-native";
 
 const { height, width } = Dimensions.get('screen');
@@ -8,12 +8,20 @@ interface Props {
     placeholder: string;
     onChangeText: (text: string) => void;
     secureTextEntry?: boolean;
+    style?: TextStyle;
+    value?: string;
 }
 
 const Input: FC<Props> = (props) => {
     return (
-        <View style={styles.container} >
-            <TextInput style={styles.input} placeholder={props.placeholder} secureTextEntry={props.secureTextEntry} onChangeText={props.onChangeText}></TextInput>
+        <View style={[styles.container, props.style]} >
+            <TextInput
+             style={styles.input} 
+             placeholder={props.placeholder} 
+             secureTextEntry={props.secureTextEntry} 
+             onChangeText={props.onChangeText}
+             value={props.value}  >
+             </TextInput>
         </View>
     )
 }

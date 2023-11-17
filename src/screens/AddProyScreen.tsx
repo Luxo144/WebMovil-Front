@@ -4,12 +4,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 
 
-const AddTeamScreen = ({navigation}) => {
+const AddProyScreen:FC = (props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
   const handleAdd = () => {
-    navigation.goBack();
+    props.navigation.goBack();
   };
 
   return (
@@ -17,7 +17,7 @@ const AddTeamScreen = ({navigation}) => {
       <TextInput
         value={name}
         onChangeText={setName}
-        placeholder="Nombre del Equipo"
+        placeholder="Nombre del Proyecto"
         style={styles.input}
       />
       <TextInput
@@ -26,7 +26,7 @@ const AddTeamScreen = ({navigation}) => {
         placeholder="Descripción"
         style={styles.input}
       />
-      <Button title="Añadir Equipo" onPress={handleAdd} />
+      <Button title="Crear Proyecto" onPress={handleAdd} />
     </View>
   );
 };
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddTeamScreen;
+export default AddProyScreen;

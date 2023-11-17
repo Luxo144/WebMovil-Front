@@ -5,7 +5,7 @@ import AppStack from './appstack';
 import AuthContext from './AuthContext';
 
 const MainNav : FC = () => {
-    const [user,setUser] = useState(false);
+    const [user,setUser] = useState(true);
     return(
         <AuthContext.Provider value={{ user, setUser }}>
             <NavigationContainer>           

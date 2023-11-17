@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet,Button,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface TeamData {
@@ -7,15 +7,15 @@ interface TeamData {
   name: string;
   description: string;
   date: string;
+  ownerId: string;
 }
 
 interface TeamProps {
   team: TeamData;
-  onEdit: (teamId: string) => void;
-  onDelete: (teamId: string) => void;
+  onView: () => void;
 }
 
-const Team:React.FC<TeamProps> = ({ team,onEdit,onDelete }) => {
+const Team:React.FC<TeamProps> = ({ team,onView }) => {
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
@@ -24,11 +24,8 @@ const Team:React.FC<TeamProps> = ({ team,onEdit,onDelete }) => {
         <Text>Creado el: {team.date}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => onEdit(team.id)}>
-          <Icon name="pencil" size={25} color="blue" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => onDelete(team.id)}>
-          <Icon name="delete" size={25} color="red" />
+        <TouchableOpacity onPress={() => onView()}>
+          <Icon name="eye-settings-outline" size={25} color="blue" />
         </TouchableOpacity>
       </View>
     </View>

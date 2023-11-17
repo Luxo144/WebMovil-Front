@@ -6,15 +6,15 @@ import Team from '../components/team';
 const HomeScreen:FC = (props) => {
 
   const [teams, setTeams] = useState([
-    { id: '1', name: 'Equipo A', description: 'Descripción del Equipo A', date: '01-01-2023' },
-    { id: '2', name: 'Equipo B', description: 'Descripción del Equipo B', date: '05-01-2023' },
+    { id: '1', name: 'Equipo A', description: 'Descripción del Equipo A', date: '01-01-2023',ownerId:'1' },
+    { id: '2', name: 'Equipo B', description: 'Descripción del Equipo B', date: '05-01-2023',ownerId:'4' },
   ]);
 
-  const handleEdit = (teamId) => {
+  const handleView = () => {
     
-    props.navigation.navigate('EditTeam', { teamId });
+    props.navigation.navigate('ViewTeam');
   };
-
+/*
   const deleteTeam = (teamId) => {
     setTeams(teams.filter(team => team.id !== teamId));
   }
@@ -32,14 +32,15 @@ const HomeScreen:FC = (props) => {
       ]
     );
   };
+  */
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <FlatList
         data={teams}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <Team team={item}
-        onEdit={handleEdit}
-        onDelete={handleDelete} />}
+        onView={handleView}
+        />}
         
       />
       <Button title="Añadir equipo" onPress={() => props.navigation.navigate('AddTeam')} />
