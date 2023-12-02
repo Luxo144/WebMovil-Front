@@ -1,9 +1,20 @@
-import { RegisterData, LoginData, LoginResponse, PasswordResetRequest, PasswordReset,User, CreateProfileData, UpdateProfileData, UpdateUserData } from '../types/user';
+import { 
+  ChangePassword, 
+  CreateUserDto, 
+  LoginUserDto, 
+  ResetPasswordDto, 
+  UpdateUserDto, 
+  RequestPasswordReset,
+  ApiResponseSuccess,
+  ApiResponseError,
+  LoginSuccessResponse,
+  UserDataResponse
+} from '../types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from 'jsonwebtoken';
 
-const BASE_URL = 'http://10.0.2.2:3002/auth';
-const TOKEN_STORAGE_KEY = '@auth_token';
+
+const BASE_URL = "http://192.168.117.1:3009/auth";
+const TOKEN_STORAGE_KEY = '@accessToken';
 
 export const storeToken = async (token: string): Promise<void> => {
   try {
@@ -30,8 +41,8 @@ export const removeToken = async (): Promise<void> => {
   }
 };
 
-
-export const register = async (userData: RegisterData): Promise<User> => {
+//register
+export const register = async (userData: CreateUserDto): Promise<ApiResponseError | ApiResponseSuccess> => {
   const response = await fetch(`${BASE_URL}/register`, {
     method: 'POST',
     headers: {
@@ -40,11 +51,13 @@ export const register = async (userData: RegisterData): Promise<User> => {
     body: JSON.stringify(userData),
   });
   console.log('Datos enviados:', JSON.stringify(userData));
-  const data = await response.json();
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;; 
   return data;
 };
 
-export const login = async (loginData: LoginData): Promise<LoginResponse> => {
+//login
+export const login = async (loginData: LoginUserDto): Promise<LoginSuccessResponse | ApiResponseError> => {
+  console.log('Datos enviados:', JSON.stringify(loginData));
   const response = await fetch(`${BASE_URL}/login`, {
     method: 'POST',
     headers: {
@@ -53,18 +66,93 @@ export const login = async (loginData: LoginData): Promise<LoginResponse> => {
     body: JSON.stringify(loginData),
   });
 
+  const data = await response.json() as LoginSuccessResponse | ApiResponseError;
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Error durante el inicio de sesión');
   }
 
-  const data: LoginResponse = await response.json();
-  await storeToken(data.accessToken); // Guardamos el token en AsyncStorage después de iniciar sesión exitosamente
+  if ('accessToken' in data) {
+    await storeToken(data.accessToken.accessToken);
+  }
   return data;
 };
 
 
-export const requestPasswordReset = async (resetRequest: PasswordResetRequest): Promise<void> => {
+//logout
+export const logout = async (): Promise<ApiResponseError | ApiResponseSuccess> => {
+  const token = await getToken();
+  if (!token) {
+    throw new Error('No auth token found');
+  }
+  const response = await fetch(`${BASE_URL}/logout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;
+  await removeToken();
+  return data;
+};
+
+//cambiar contraseña iniciado sesion change-password
+export const resetPasswordLogin = async (change: ChangePassword, token: string): Promise<ApiResponseError | ApiResponseSuccess> => {
+  const response = await fetch(`${BASE_URL}/change-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(change),
+
+  });
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;
+  return data;
+}
+
+//obtener datos del usuario enviando el token
+export const getUserData = async (token: string): Promise<UserDataResponse| ApiResponseError> => {
+  const response = await fetch(`${BASE_URL}/me`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  const data = await response.json() as UserDataResponse | ApiResponseError;
+  return data;
+};
+
+//actualizar datos del usuario
+export const updateUserData = async (userData: UpdateUserDto, token: string): Promise<ApiResponseError | ApiResponseSuccess> => {
+  const response = await fetch(`${BASE_URL}/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(userData),
+  });
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;
+  return data;
+};
+
+//eliminar usuario
+export const deleteUser = async (token: string): Promise<ApiResponseError | ApiResponseSuccess> => {
+  const response = await fetch(`${BASE_URL}/delete`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;
+  return data;
+};
+
+export const requestPasswordReset = async (resetRequest: RequestPasswordReset): Promise<ApiResponseError| ApiResponseSuccess> => {
   const response = await fetch(`${BASE_URL}/request-password-reset`, {
     method: 'POST',
     headers: {
@@ -73,137 +161,19 @@ export const requestPasswordReset = async (resetRequest: PasswordResetRequest): 
     body: JSON.stringify(resetRequest),
   });
 
-  if (response.status === 404) {
-    throw new Error('User not found');
-  } else if (!response.ok) {
-    throw new Error('Error during password reset request');
-  }
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError ;
+  return data;
 };
 
 
-export const resetPassword = async (resetData: PasswordReset): Promise<void> => {
-  await fetch(`${BASE_URL}/reset-password`, {
+export const resetPassword = async (resetData: ResetPasswordDto): Promise<ApiResponseError | ApiResponseSuccess> => {
+  const response = await fetch(`${BASE_URL}/reset-password`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(resetData),
   });
-};
-
-export const getProfile = async (id: number): Promise<User> => {
-  const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'GET',
-  });
-  
-  if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error fetching profile');
-  }
-
-  const data: User = await response.json();
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;
   return data;
-};
-
-export const getUserDetails = async (userId: number, token: string): Promise<Partial<User>> => {
-  const response = await fetch(`${BASE_URL}/user/${userId}`, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-      },
-  });
-
-  if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error fetching user details');
-  }
-
-  const fullData: User = await response.json();
-  const filteredData = {
-      name: fullData.first_name,
-      email: fullData.email
-  };
-  return filteredData;
-};
-
-
-export const getUserDetailsCombined = async (token: string): Promise<any> => {
-  const response = await fetch(`http://10.0.2.2:3002/auth/user-details`, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-      },
-  });
-
-  if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error fetching combined user details');
-  }
-
-  const data = await response.json();
-  return data;
-};
-
-
-
-export const createProfile = async (profileData: CreateProfileData): Promise<User> => {
-  const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(profileData),
-  });
-
-  if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error creating profile');
-  }
-
-  const data: User = await response.json();
-  return data;
-};
-
-export const updateProfile = async (id: number, profileData: UpdateProfileData): Promise<void> => {
-  const token = await getToken();
-  if (!token) {
-      throw new Error("No auth token found");
-  }
-
-  const response = await fetch(`${BASE_URL}/profile/${id}`, {
-      method: 'PUT',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(profileData),
-  });
-
-  if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error updating profile');
-  }
-};
-
-export const updateUser = async (id: number, userData: UpdateUserData): Promise<void> => {
-  const token = await getToken();
-  if (!token) {
-      throw new Error("No auth token found");
-  }
-
-  const response = await fetch(`${BASE_URL}/user/${id}`, {
-      method: 'PUT',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(userData),
-  });
-
-  if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error updating user');
-  }
 };

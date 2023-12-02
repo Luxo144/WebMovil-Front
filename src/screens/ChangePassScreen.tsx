@@ -1,7 +1,8 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Input, Button } from '../components'; // Asumiendo que tienes estos componentes
-
+import { PasswordResetCode } from '../types/user';
+import { resetPassword, resetPasswordLogin } from '../services/auth.services';
 
 
 const ChangePassScreen: FC<{ navigation: any }> = ({ navigation }) => {
@@ -14,10 +15,15 @@ const ChangePassScreen: FC<{ navigation: any }> = ({ navigation }) => {
       Alert.alert("Error", "Las contraseñas no coinciden.");
       return;
     }
-
     try {
-      // Aquí iría la lógica para validar el código y cambiar la contraseña
-      // Por ejemplo: await resetPassword(code, newPassword);
+      console.log("code",code)
+      console.log("newPass:", newPassword)
+      //crear un objeto de tipo PasswordResetCode
+      const codeObj: PasswordResetCode = {
+        token: code,
+        newPassword: newPassword
+      }
+      const response = await resetPassword(codeObj);
 
       Alert.alert("Éxito", "Contraseña cambiada correctamente.");
       navigation.navigate('Login'); // Redirige al usuario al Login

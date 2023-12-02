@@ -1,10 +1,10 @@
 export interface User {
-    id?: number;
-    first_name: string;
+    id: number;
     email: string;
-    password?: string;
-  }
+    password: string;
+}
 
+  
 export interface Token{
   id: number;
   token: string;
@@ -13,78 +13,94 @@ export interface Token{
   user_id: number;
 }
 
-export interface profile{
+export interface Profile{
   id: number;
-  user_id: number;
-  image: string;
-  name_: string;
   nickname: string;
-  job_title: string;
-  organization: string;
-  ubication: string;
-  phone: string;
-}
-
-export interface PasswordReset{
-  id: number;
+  first_name: string;
+  last_name: string;
+  job_position: string;
+  location: string;
+  profile_picture: string;
+  contact: string;
   user_id: number;
+}
+
+export interface ChangePassword{
+  password: string;
+  newPassword: string;
+}
+
+export interface CreateUserDto {
+  first_name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginUserDto{
+  email: string;
+  password: string;
+}
+
+export interface ResetPasswordDto{
   token: string;
-  expires_at: Date;
+  newPassword: string;
 }
 
-export interface CreateProfileData {
-  user: User;
-  image?: string;
-  name_: string;
-  nickname?: string;
-  job_title?: string;
-  organization?: string;
-  ubication?: string;
-  phone?: string;
+export interface UpdateUserDto{
+  email: string;
+  nickname: string;
+  first_name: string;
+  last_name: string;
+  job_position: string;
+  location: string;
+  profile_picture: string;
+  contact: string;
 }
 
-export interface LoginResponseDto {
-  accessToken: string;
-  expiresIn: Date;
+export interface RequestPasswordReset{
+  email: string;
 }
 
-export interface RegisterData {
-    first_name: string;
-    email: string;
-    password: string;
-  }
-  
-  export interface LoginData {
-    email: string;
-    password: string;
-  }
-  
-  export interface LoginResponse {
-    accessToken: string;
-    expiresIn: Date;
-  }
-  
-  export interface PasswordResetRequest {
-    email: string;
-  }
-  
-  export interface PasswordReset {
-    email: string;
-    token: string;
-    newPassword: string;
-  }
+// Interfaces para respuestas exitosas y de error
 
-  export interface UpdateProfileData {
-    name_: string;
-    nickname: string;
-    job_title: string;
-    organization: string;
-    ubication?: string;
-    phone?: string;
-  }
+export interface ApiResponseSuccess {
+  message: string;
+}
 
-  export interface UpdateUserData {
-    name: string;
-    email: string;
-  }
-  
+export interface ApiResponseError {
+  statusCode: number;
+  message: string;
+}
+
+// Específicas para operaciones
+
+export interface LoginSuccessResponse {
+  accessToken: {
+      accessToken: string;
+      expiresIn: string; 
+  };
+}
+
+export interface UserDataResponse {
+  id: number;
+  email: string;
+  password_hash?: string; 
+  is_active: boolean;
+  is_verified: boolean;
+  createdAt: string; 
+  updatedAt: string; 
+  profile: UserProfile;
+}
+
+export interface UserProfile {
+  id: number;
+  nickname: string;
+  first_name: string;
+  last_name: string;
+  job_position: string;
+  location: string;
+  profile_picture: string;
+  contact: string;
+  createdAt: string; // O Date
+  updatedAt: string; // O Date
+}

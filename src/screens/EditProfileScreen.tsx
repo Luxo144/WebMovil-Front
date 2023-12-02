@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, TextInput, Image, Button,TouchableOpacity,Image
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ImagePicker from 'react-native-image-crop-picker';
-
+import { UpdateProfileData } from '../types/user';
+import { updateProfileData } from '../services/auth.services';
 
 const EditProfileScreen: FC = () => {
 
@@ -19,6 +20,23 @@ const EditProfileScreen: FC = () => {
 
     const handleUpdate = () => {
         setImage("https://via.placeholder.com/150");
+        //creo un const tipo UpdateProfiledata y le asigno las variables y llamo a la funcion UpdateProfileDto
+        const update: UpdateProfileData = {
+            nickname: nick,
+            first_name: nombre,
+            last_name: "null",
+            job_position: trabajo,
+            location: ubicacion,
+            profile_picture: "",
+            contact: phone,
+        }
+        try{
+            console.log("updateProfileData:", updateProfileData )
+            const response =  updateProfileData(update);
+
+        }catch (error){
+
+        }
     }
 
 
@@ -40,10 +58,6 @@ const EditProfileScreen: FC = () => {
             <TextInput style={styles.input} value={nombre} onChangeText={setNombre} placeholder="Nombre" />
             </View>
 
-            <View style={styles.inputContainer}>
-            <Icon name='email' color='#777777' size={20}/>
-            <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" />
-            </View>
 
             <View style={styles.inputContainer}>
             <Icon name='phone-dial' color='#777777' size={20}/>

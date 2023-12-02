@@ -11,7 +11,7 @@ const PassRecScreen:FC = (props) => {
       if (email) {
         try {
           await requestPasswordReset({ email });
-          props.navigation.navigate('Login')
+          props.navigation.navigate('ChangePass')
           alert('Por favor, revisa tu correo electrónico para las instrucciones de recuperación.');
         } catch (error) {
           console.error('Error al intentar recuperar la contraseña:', error);
