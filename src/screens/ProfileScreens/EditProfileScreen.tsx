@@ -3,10 +3,14 @@ import { View, Text, StyleSheet, TextInput, Image, Button,TouchableOpacity,Image
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ImagePicker from 'react-native-image-crop-picker';
-import { UpdateProfileData } from '../types/user';
-import { updateProfileData } from '../services/auth.services';
+import { UpdateProfileData } from '../../types/user';
+import { updateProfileData } from '../../services/auth.services';
+import { ProfileStackParamList } from "../../../ParamLists";
+import { StackScreenProps } from "@react-navigation/stack";
 
-const EditProfileScreen: FC = () => {
+type Props = StackScreenProps<ProfileStackParamList,"EditProfile">
+
+const EditProfileScreen: FC<Props> = () => {
 
     // En un escenario real, obtendrías estos valores iniciales de algún lugar, 
     // como una tienda global, una base de datos, etc.

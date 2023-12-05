@@ -1,17 +1,22 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet,FlatList,Alert } from 'react-native';
-import Button from '../components/button'; // Asegúrate de que esta ruta sea correcta
+import Button from '../../components/button'; // Asegúrate de que esta ruta sea correcta
 
-const ViewProyectScreen: FC = (props)=>{
+import { StackScreenProps } from '@react-navigation/stack';
+import { ProyStackParamList } from '../../../ParamLists';
+
+type Props = StackScreenProps<ProyStackParamList,"ViewProyectScreen">;
+
+const ViewProyectScreen: FC<Props> = ({navigation})=>{
 
     const handleEditTeam = () => {
         // Navegación a la pantalla de edición del proyecto
-        props.navigation.navigate('EditProy');
+        navigation.navigate('EditProyScreen');
     };
 
     const handleViewMembers = () => {
         // Navegación a la pantalla para ver miembros del proyecto
-        props.navigation.navigate('ProyMembers');
+        navigation.navigate('ProyMembersScreen');
     };
 
     const handleDeleteProyect = () => {

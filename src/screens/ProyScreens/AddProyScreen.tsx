@@ -1,10 +1,11 @@
 import React, {FC, useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackScreenProps } from '@react-navigation/stack';
+import { ProyStackParamList } from '../../../ParamLists';
 
+type Props = StackScreenProps<ProyStackParamList,"AddProyScreen">;
 
-
-const AddTeamScreen = ({navigation}) => {
+const AddProyScreen:FC<Props> = ({navigation}) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
@@ -17,7 +18,7 @@ const AddTeamScreen = ({navigation}) => {
       <TextInput
         value={name}
         onChangeText={setName}
-        placeholder="Nombre del Equipo"
+        placeholder="Nombre del Proyecto"
         style={styles.input}
       />
       <TextInput
@@ -26,7 +27,7 @@ const AddTeamScreen = ({navigation}) => {
         placeholder="Descripción"
         style={styles.input}
       />
-      <Button title="Añadir Equipo" onPress={handleAdd} />
+      <Button title="Crear Proyecto" onPress={handleAdd} />
     </View>
   );
 };
@@ -45,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddTeamScreen;
+export default AddProyScreen;

@@ -2,35 +2,29 @@ import React,{FC} from "react";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {createStackNavigator} from '@react-navigation/stack';
 import { View } from "react-native";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //screens
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import EditProfileScreen from "../screens/EditProfileScreen";
-import AddTeamScreen from "../screens/AddTeamScreen";
-import EditTeamScreen from "../screens/EditTeamScreen";
-import ProyectsScreen from "../screens/ProyectsScreen";
-import ViewTeamScreen from "../screens/ViewTeamScreen";
-import ProyInvitationScreen from "../screens/ProyInvitationScreen"
-import TeamMembersScreen from "../screens/TeamMembersScreen";
-import EditProyScreen from "../screens/EditProyScreen";
-import ProyMembersScreen from "../screens/ProyMembersScreen";
-import AddProyScreen from "../screens/AddProyScreen"; 
+import {ProfileScreen,EditProfileScreen} from "../screens/ProfileScreens";
+import {AddTeamScreen,EditTeamScreen,ViewTeamScreen,ProyInvitationScreen,
+TeamMembersScreen,AddMemberScreen,TeamInvitationScreen,TeamScreen} from "../screens/TeamScreens";
+import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen} from "../screens/ProyScreens";
 
-import TeamInvitationScreen from "../screens/TeamInvitationScreen";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ViewProyectScreen from "../screens/ViewProyectScreen";
+
+
+
+import { ProfileStackParamList,TeamStackParamList,ProyStackParamList } from "../../ParamLists";
 
 const Tab = createBottomTabNavigator();
-const ProfileStack = createStackNavigator();
-const TeamStack = createStackNavigator();
-const ProyStack = createStackNavigator();
+const ProfileStack = createStackNavigator<ProfileStackParamList>();
+const TeamStack = createStackNavigator<TeamStackParamList>();
+const ProyStack = createStackNavigator<ProyStackParamList>();
 
 
-const AppStack = () => {
+const AppTab:FC = () => {
     return (
         <Tab.Navigator
-        initialRouteName="Home"
+        initialRouteName="TeamScreen"
         screenOptions={{
             tabBarActiveTintColor: 'purple',
             headerShown: false
@@ -38,7 +32,7 @@ const AppStack = () => {
         }}
         >
             <Tab.Screen 
-            name = "Home" 
+            name = "TeamScreen" 
             component={TeamStackScreen}
             options={{
                 tabBarLabel:'Equipos',
@@ -48,7 +42,7 @@ const AppStack = () => {
             }}/>
                         
             <Tab.Screen
-             name = "Proyectos"
+             name = "ProyectsScreen"
              component={ProyStackScreen}
              options={{
                 tabBarLabel:'Proyectos',
@@ -57,7 +51,7 @@ const AppStack = () => {
                 ),}}/>
 
             <Tab.Screen
-             name = "Perfil"
+             name = "ProfileScreen"
              component={ProfileStackScreen}
              options={{
                 tabBarLabel:'Perfil',
@@ -68,26 +62,26 @@ const AppStack = () => {
         </Tab.Navigator>
     )
 }
-export default AppStack;
+export default AppTab;
 
-const ProfileStackScreen : FC = (props)=> {
+const ProfileStackScreen : FC = ()=> {
     return (
         <ProfileStack.Navigator>
             <ProfileStack.Screen
-                name="Profile"
+                name="ProfileScreen"
                 component={ProfileScreen}
-                options={{
+                options={({ navigation }) => ({
                     title: 'Perfil',
                     headerRight: () => (
-                        <View style={{marginRight: 10}}>
-                        <Icon.Button
-                            name="account-edit"
-                            size={25}
-                            onPress={() => props.navigation.navigate('EditProfile')}
-                        />
+                        <View style={{ marginRight: 10 }}>
+                            <Icon.Button
+                                name="account-edit"
+                                size={25}
+                                onPress={() => navigation.navigate('EditProfile')}
+                            />
                         </View>
                     ),
-                    }}
+                })}
             />
             <ProfileStack.Screen
                 name="EditProfile"
@@ -100,50 +94,51 @@ const ProfileStackScreen : FC = (props)=> {
     );
 };
 
-const TeamStackScreen:FC = (props) =>{
+const TeamStackScreen:FC = () =>{
     return(
         <TeamStack.Navigator>
             <TeamStack.Screen
-            name="HomeTeam"
-            component={HomeScreen}
-            options={{
-            title: 'Mis Equipos',
-            headerRight: () => (
-                <View style={{marginRight: 10}}>
-                <Icon.Button
-                    name="account-multiple-plus-outline"
-                    size={25}
-                    onPress={() => props.navigation.navigate('ViewInvs')}
-                />
-                </View>
-            ),
-            }}/>
+                name="TeamScreen"
+                component={TeamScreen}
+                options={({ navigation }) => ({
+                    title: 'Mis Equipos',
+                    headerRight: () => (
+                        <View style={{ marginRight: 10 }}>
+                            <Icon.Button
+                                name="account-multiple-plus-outline"
+                                size={25}
+                                onPress={() => navigation.navigate('TeamInvitationScreen')}
+                            />
+                        </View>
+                    ),
+                })}
+            />
             <TeamStack.Screen
-            name="AddTeam"
+            name="AddTeamScreen"
             component={AddTeamScreen}
             options={{
             title: 'Añadir equipo',
             }}/>
             <TeamStack.Screen
-            name="EditTeam"
+            name="EditTeamScreen"
             component={EditTeamScreen}
             options={{
             title: 'Editar equipo',
             }}/>
             <TeamStack.Screen
-            name="ViewInvs"
+            name="TeamInvitationScreen"
             component={TeamInvitationScreen}
             options={{
             title:'Invitaciones de equipo'
             }}/>
             <TeamStack.Screen
-            name="ProyInvs"
+            name="ProyInvitationScreen"
             component={ProyInvitationScreen}
             options={{
             title: 'Invitaciones de proyecto',
             }}/>
             <TeamStack.Screen
-            name="ViewTeam"
+            name="ViewTeamScreen"
             component={ViewTeamScreen}
             options={{
             title: 'Info Equipo',
@@ -155,53 +150,60 @@ const TeamStackScreen:FC = (props) =>{
             title: 'Miembros',
             }}/>
             <TeamStack.Screen
-            name="ProyMembers"
+            name="ProyMembersScreen"
             component={ProyMembersScreen}
             options={{
             title: 'Equipos de proyecto',
             }}/>
             <TeamStack.Screen
-            name="EditProy"
+            name="EditProyScreen"
             component={EditProyScreen}
             options={{
             title: 'Editar Proyecto',
             }}/>
+            <TeamStack.Screen
+            name="AddMemberScreen"
+            component={AddMemberScreen}
+            options={{
+            title: 'Añadir miembro',
+            }}/>
+            
 
         </TeamStack.Navigator>
     )
 }
 
-const ProyStackScreen:FC = (props) =>{
+const ProyStackScreen:FC = () =>{
     return(
         <ProyStack.Navigator>
             <ProyStack.Screen
-            name = "Proyects"
+            name = "ProyectsScreen"
             component={ProyectsScreen}
             options={{
                 title: 'Mis Proyectos',
             }}
             />
             <ProyStack.Screen
-            name = "ViewProyect"
+            name = "ViewProyectScreen"
             component={ViewProyectScreen}
             options={{
                 title: 'Info Proyecto',
             }}
             />
             <ProyStack.Screen
-            name="ProyMembers"
+            name="ProyMembersScreen"
             component={ProyMembersScreen}
             options={{
             title: 'Equipos de proyecto',
             }}/>
             <ProyStack.Screen
-            name="EditProy"
+            name="EditProyScreen"
             component={EditProyScreen}
             options={{
             title: 'Editar Proyecto',
             }}/>
             <ProyStack.Screen
-            name="AddProy"
+            name="AddProyScreen"
             component={AddProyScreen}
             options={{
             title: 'Crear Proyecto',

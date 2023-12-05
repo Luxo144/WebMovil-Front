@@ -1,19 +1,24 @@
 import React,{ FC, useState } from 'react';
 import { View, StyleSheet, Alert, Text,FlatList } from 'react-native';
-import { Button } from '../components';
-import TeamMember from '../components/teamMember';
+import { Button } from '../../components';
+import TeamMember from '../../components/teamMember';
+import { StackScreenProps } from '@react-navigation/stack';
+import {TeamStackParamList} from '../../../ParamLists'
 
-const TeamMembersScreen:FC = (props) =>{
+type Props = StackScreenProps<TeamStackParamList,"TeamMembersScreen">
+
+
+const TeamMembersScreen:FC<Props> = ({navigation}) =>{
 
     const [teamMembers, setTeamMembers] = useState([
         { id: '1', name: 'Carlos', role: 'Miembro'},
         { id: '2', name: 'Juan', role: 'Desarrollador'},
       ]);
 
-    const handleEdit = (memberId) => {
+    const handleEdit = (memberId: string) => {
       
     }
-    const handleDelete = (memberId) => {
+    const handleDelete = (memberId: string) => {
         setTeamMembers(teamMembers.filter(member => member.id !== memberId));
     }
  
@@ -28,7 +33,7 @@ const TeamMembersScreen:FC = (props) =>{
           onDelete={handleDelete}
           />}     
         />
-        <Button title="Añadir integrante" onPress={() => props.navigation.navigate('AddProy')} />
+        <Button title="Añadir integrante" onPress={() => navigation.navigate('AddMemberScreen')} />
       </View>
     );
 }

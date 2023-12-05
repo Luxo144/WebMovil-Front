@@ -1,17 +1,21 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Input, Button } from '../components';
-import { requestPasswordReset } from '../services/auth.services';
+import { Input, Button } from '../../components';
+import { requestPasswordReset } from '../../services/auth.services';
+import { StackScreenProps } from '@react-navigation/stack';
+import {AuthStackParamList} from '../../../ParamLists';
 
-const PassRecScreen:FC = (props) => {
+type Props = StackScreenProps<AuthStackParamList,"PassRecScreen">;
+
+const PassRecScreen:FC<Props> = ({navigation}) => {
     const [email, setEmailRecovery] = useState("");
 
     const handlePasswordRecovery = async () => {
       if (email) {
         try {
           await requestPasswordReset({ email });
-          props.navigation.navigate('ChangePass')
+          navigation.navigate('ChangePassScreen')
           alert('Por favor, revisa tu correo electrónico para las instrucciones de recuperación.');
         } catch (error) {
           console.error('Error al intentar recuperar la contraseña:', error);

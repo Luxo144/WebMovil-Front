@@ -1,7 +1,7 @@
 import React, {FC, useEffect,useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './authstack';
-import AppStack from './appstack';
+import AppTab from './appstack';
 import AuthContext from './AuthContext';
 
 const MainNav : FC = () => {
@@ -9,7 +9,7 @@ const MainNav : FC = () => {
     return(
         <AuthContext.Provider value={{ user, setUser }}>
             <NavigationContainer>           
-                {user ? <AppStack/>:<AuthStack/> }
+                {user ? <AppTab/>:<AuthStack/> }
             </NavigationContainer>
         </AuthContext.Provider>
     )

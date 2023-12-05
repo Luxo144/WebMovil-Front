@@ -1,11 +1,15 @@
 import React, { FC, useState,useContext } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Input, Loader ,Button} from '../components';
-import { login } from '../services/auth.services';
-import AuthContext from '../navigation/AuthContext';
+import { Input, Loader ,Button} from '../../components';
+import { login } from '../../services/auth.services';
+import { StackScreenProps } from '@react-navigation/stack';
+import {AuthStackParamList} from '../../../ParamLists'
+import AuthContext from '../../navigation/AuthContext';
 
-const LoginScreen: FC = (props) => {
+type Props = StackScreenProps<AuthStackParamList,"LoginScreen">;
+
+const LoginScreen: FC<Props> = ({navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,12 +51,12 @@ const LoginScreen: FC = (props) => {
       
       <View style={styles.linkContainer}>
         <Text style={styles.linkText}>No tienes una cuenta? </Text>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Sign')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
           <Text style={styles.linkHighlight}>Registrate aqui</Text>
         </TouchableOpacity>
       </View>
       <View>
-      <TouchableOpacity onPress={() => props.navigation.navigate('PassRec')}>
+      <TouchableOpacity onPress={() => navigation.navigate('PassRecScreen')}>
           <Text style={styles.linkHighlight}>Recupera tu contraseña</Text>
         </TouchableOpacity>
       </View>

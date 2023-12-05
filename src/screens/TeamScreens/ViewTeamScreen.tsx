@@ -1,21 +1,26 @@
 import React,{ FC, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import Button from '../components/button'; // Asegúrate de que esta ruta sea correcta
+import Button from '../../components/button'; // Asegúrate de que esta ruta sea correcta
+import { StackScreenProps } from '@react-navigation/stack';
+import {TeamStackParamList} from '../../../ParamLists'
 
-const ViewTeamScreen:FC = (props) => {
+type Props = StackScreenProps<TeamStackParamList,"ViewTeamScreen">
+
+
+const ViewTeamScreen:FC<Props> = ({navigation}) => {
 
     const handleEditTeam = () => {
         // Navegación a la pantalla de edición del equipo
-        props.navigation.navigate('EditTeam');
+        navigation.navigate('EditTeamScreen');
     };
 
     const handleViewMembers = () => {
         // Navegación a la pantalla para ver miembros del equipo
-        props.navigation.navigate('TeamMembersScreen');
+        navigation.navigate('TeamMembersScreen');
     };
 
     const handleViewInvitations = () =>{
-        props.navigation.navigate('ProyInvs');
+        navigation.navigate('ProyInvitationScreen');
     }
 
     const handleDeleteTeam = () => {

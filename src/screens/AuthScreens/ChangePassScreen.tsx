@@ -1,11 +1,14 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { Input, Button } from '../components'; // Asumiendo que tienes estos componentes
-import { PasswordResetCode } from '../types/user';
-import { resetPassword, resetPasswordLogin } from '../services/auth.services';
+import { Input, Button } from '../../components'; // Asumiendo que tienes estos componentes
+import { PasswordResetCode } from '../../types/user';
+import { resetPassword, resetPasswordLogin } from '../../services/auth.services';
+import { StackScreenProps } from '@react-navigation/stack';
+import {AuthStackParamList} from '../../../ParamLists';
 
+type Props = StackScreenProps<AuthStackParamList,"ChangePassScreen">;
 
-const ChangePassScreen: FC<{ navigation: any }> = ({ navigation }) => {
+const ChangePassScreen: FC<Props> = ({ navigation }) => {
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,7 +29,7 @@ const ChangePassScreen: FC<{ navigation: any }> = ({ navigation }) => {
       const response = await resetPassword(codeObj);
 
       Alert.alert("Éxito", "Contraseña cambiada correctamente.");
-      navigation.navigate('Login'); // Redirige al usuario al Login
+      navigation.navigate('LoginScreen'); // Redirige al usuario al Login
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Hubo un problema al cambiar la contraseña.");

@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet,FlatList,Alert } from 'react-native';
-import { Button } from '../components';
-import ProyMember from '../components/proyMember';
+import { Button } from '../../components';
+import ProyMember from '../../components/proyMember';
 
 const ProyMembersScreen:FC = (props) =>{
 

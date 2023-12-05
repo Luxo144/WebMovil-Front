@@ -2,7 +2,14 @@ import React, { useState, useEffect,FC } from 'react';
 import { View, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const EditProyScreen:FC = (props) =>{
+import { StackScreenProps } from '@react-navigation/stack';
+import { ProyStackParamList } from '../../../ParamLists';
+
+type Props = StackScreenProps<ProyStackParamList,"EditProyScreen">;
+
+
+
+const EditProyScreen:FC<Props> = () =>{
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
 

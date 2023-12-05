@@ -1,23 +1,21 @@
 import React,{FC} from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import LoginScreen from "../screens/LoginScreen";
-import SignUpScreen from "../screens/SignUpScreen";
-import PassRecScreen from "../screens/PassRecScreen";
-import ChangePassScreen from "../screens/ChangePassScreen";
+import { LoginScreen,SignUpScreen,PassRecScreen,ChangePassScreen } from "../screens/AuthScreens";
+import { AuthStackParamList } from "../../ParamLists";
 
 
-const {Navigator,Screen} = createStackNavigator();
+const Stack = createStackNavigator<AuthStackParamList>();
 
 
 const AuthStack : FC = () => {
     
     return (
-        <Navigator screenOptions={{headerShown: false}}>
-            <Screen name = "Login" component={LoginScreen}/>
-            <Screen name = "Sign" component={SignUpScreen}/>
-            <Screen name = "PassRec" component={PassRecScreen}/>
-            <Screen name = "ChangePass" component={ChangePassScreen}/>         
-        </Navigator>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name = "LoginScreen" component={LoginScreen}/>
+            <Stack.Screen name = "SignUpScreen" component={SignUpScreen}/>
+            <Stack.Screen name = "PassRecScreen" component={PassRecScreen}/>
+            <Stack.Screen name = "ChangePassScreen" component={ChangePassScreen}/>         
+        </Stack.Navigator>
     )
 }
 export default AuthStack;

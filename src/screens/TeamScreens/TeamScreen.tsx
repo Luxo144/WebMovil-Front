@@ -1,9 +1,12 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet,FlatList,Button,Alert } from 'react-native';
-import Team from '../components/team';
+import Team from '../../components/team';
+import { StackScreenProps } from '@react-navigation/stack';
+import {TeamStackParamList} from '../../../ParamLists'
 
+type Props = StackScreenProps<TeamStackParamList,"TeamScreen">
 
-const HomeScreen:FC = (props) => {
+const TeamScreen:FC<Props> = ({navigation}) => {
 
   const [teams, setTeams] = useState([
     { id: '1', name: 'Equipo A', description: 'Descripción del Equipo A', date: '01-01-2023',ownerId:'1' },
@@ -12,7 +15,7 @@ const HomeScreen:FC = (props) => {
 
   const handleView = () => {
     
-    props.navigation.navigate('ViewTeam');
+    navigation.navigate('ViewTeamScreen');
   };
 /*
   const deleteTeam = (teamId) => {
@@ -43,9 +46,9 @@ const HomeScreen:FC = (props) => {
         />}
         
       />
-      <Button title="Añadir equipo" onPress={() => props.navigation.navigate('AddTeam')} />
+      <Button title="Añadir equipo" onPress={() => navigation.navigate('AddTeamScreen')} />
     </View>
   );
 };
 
-export default HomeScreen;
+export default TeamScreen;

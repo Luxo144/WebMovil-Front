@@ -1,18 +1,22 @@
 import React,{ FC, useState } from 'react';
 import { View, Text, StyleSheet,TouchableOpacity,FlatList } from 'react-native';
-import Proyect from '../components/proyect';
-import { Button } from '../components';
+import Proyect from '../../components/proyect';
+import { Button } from '../../components';
 
+import { StackScreenProps } from '@react-navigation/stack';
+import { ProyStackParamList } from '../../../ParamLists';
 
-const ProyectsScreen: FC = (props) => {
+type Props = StackScreenProps<ProyStackParamList,"ProyectsScreen">;
+
+const ProyectsScreen: FC<Props> = ({navigation}) => {
 
     const [proyects, setProyects] = useState([
         { id: '1', name: 'Proyecto A', description: 'Descripción del Proyecto A', date: '01-01-2023', ownerId:'1' },
         { id: '2', name: 'Proyecto B', description: 'Descripción del Proyecto B', date: '05-01-2023', ownerId:'5' },
       ]);
 
-    const handleView = (proyId) => {
-      props.navigation.navigate("ViewProyect");  
+    const handleView = (proyId:string) => {
+      navigation.navigate("ViewProyectScreen");  
     }
  
 
@@ -25,7 +29,7 @@ const ProyectsScreen: FC = (props) => {
           onView={handleView}
           />}     
         />
-        <Button title="Añadir equipo" onPress={() => props.navigation.navigate('AddProy')} />
+        <Button title="Añadir equipo" onPress={() => navigation.navigate('AddProyScreen')} />
       </View>
     );
 }

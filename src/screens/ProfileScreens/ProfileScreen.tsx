@@ -1,10 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getToken, getUser } from '../services/auth.services';
-import { getProfile } from '../services/auth.services';
+import { getToken, getUser } from '../../services/auth.services';
+import { getProfile } from '../../services/auth.services';
+import { ProfileStackParamList } from "../../../ParamLists";
+import { StackScreenProps } from "@react-navigation/stack";
 
-const ProfileScreen = () =>{
+type Props = StackScreenProps<ProfileStackParamList,"ProfileScreen">
+
+const ProfileScreen:FC<Props> = () =>{
 
     const [userDetails, setUserDetails] = useState<any | null>(null);
     const [correo, setCorreo] = useState<any | null>(null);

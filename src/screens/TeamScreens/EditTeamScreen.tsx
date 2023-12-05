@@ -1,8 +1,13 @@
 import React, { useState, useEffect ,FC} from 'react';
 import { View, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackScreenProps } from '@react-navigation/stack';
+import {TeamStackParamList} from '../../../ParamLists'
 
-const EditTeamScreen:FC = (props) => {
+type Props = StackScreenProps<TeamStackParamList,"EditTeamScreen">
+
+
+const EditTeamScreen:FC<Props> = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
