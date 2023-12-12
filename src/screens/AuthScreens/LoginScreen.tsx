@@ -1,11 +1,12 @@
 import React, { FC, useState,useContext } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Loader ,Button} from '../../components';
 import { login } from '../../services/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists'
 import AuthContext from '../../navigation/AuthContext';
+import Toast from 'react-native-toast-message';
 
 type Props = StackScreenProps<AuthStackParamList,"LoginScreen">;
 
@@ -15,28 +16,62 @@ const LoginScreen: FC<Props> = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(AuthContext);
  
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPassword = (password: string) => {
+    // Ejemplo: Validar que la contraseña tenga al menos 6 caracteres
+    return password.length >= 6;
+  };
 
   const handleSubmit = async () => {
-    if (email && password) { 
-      try {
-        //setLoading(true);
-
-        const response = await login({ email, password });
-        console.log(response); 
-        Alert.alert('Éxito', 'Inicio de sesión exitoso.');
-        // - Guardar el token en el almacenamiento local.
-        setUser(true);
-        //props.navigation.navigate('Home')
-        
-
-      } catch (error) {
-        console.error('Error al intentar iniciar sesión:', error);
-        Alert.alert('Error', 'Hubo un error al intentar iniciar sesión. Por favor, revisa tus credenciales.');
-      } finally{
-       // setLoading(false);
-      }
-    } else {
-      Alert.alert('Campos requeridos', 'El correo electrónico y la contraseña son obligatorios.');
+    if (!email || !password) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Por favor, ingresa tu correo electrónico y contraseña.'
+      }); 
+      return;
+    }    
+    if (!isValidEmail(email)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Por favor, ingresa un correo electrónico válido.'
+      });
+      return;
+    }
+    if (!isValidPassword(password)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'La contraseña debe tener al menos 6 caracteres.'
+      });
+      return;
+    }
+   
+    try {        
+      setLoading(true);
+      const response = await login({ email, password });
+      console.log(response);
+      Toast.show({
+        type: 'succes',
+        text1: 'Operacion exitosa',
+        text2: 'Inicio de sesión exitoso.'
+      }); 
+      // - Guardar el token en el almacenamiento local.
+      setUser(true);
+    } catch (error) {
+      console.error('Error al intentar iniciar sesión:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Hubo un error al intentar iniciar sesión. Por favor, revisa tus credenciales.'
+      });
+    } finally{
+      setLoading(false);
     }
     
   };
@@ -44,6 +79,7 @@ const LoginScreen: FC<Props> = ({navigation}) => {
   return (
     
     <View style={styles.container}>
+      
       <Text style={styles.headerText}>Iniciar Sesión</Text>
       <Input placeholder='Correo Electronico' onChangeText={setEmail} style={styles.input} />
       <Input placeholder='Contraseña' secureTextEntry onChangeText={setPassword} style={styles.input} />
@@ -60,8 +96,9 @@ const LoginScreen: FC<Props> = ({navigation}) => {
           <Text style={styles.linkHighlight}>Recupera tu contraseña</Text>
         </TouchableOpacity>
       </View>
+      
+      {loading && <Loader />}
     </View>
-
   );
 };
 

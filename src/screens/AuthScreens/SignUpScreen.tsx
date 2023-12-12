@@ -1,10 +1,11 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Input, Button } from '../../components';
+import { Input, Button, Loader } from '../../components';
 import { register } from '../../services/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists';
+import Toast from 'react-native-toast-message';
 
 type Props = StackScreenProps<AuthStackParamList,"SignUpScreen">;
 
@@ -12,21 +13,66 @@ const SignUpScreen:FC<Props> = ({navigation}) => {
   const [name, setNameRegistro] = useState("");
   const [email, setEmailRegistro] = useState("");
   const [password, setPasswordRegistro] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPassword = (password: string) => {
+    // Ejemplo: Validar que la contraseña tenga al menos 6 caracteres
+    return password.length >= 6;
+  };
+  
 
   const handleSignUp = async () => {
-    if (name && email && password) {
-      try {
-        const user = await register({ first_name: name, email, password });
-        console.log(user);
-        navigation.navigate('LoginScreen')
-        Alert.alert('Registro Exitoso', 'Te has registrado correctamente.');
-      } catch (error) {
-        console.error('Error al intentar registrarse:', error);
-        Alert.alert('Error', 'Hubo un error al intentar registrarse.');
-      }
-    } else {
-      Alert.alert('Campos requeridos', 'Todos los campos son obligatorios.');
+    if (!name || !email || !password) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Campos requeridos, Todos los campos son obligatorios.'
+      }); 
+      return;
+    }    
+    if (!isValidEmail(email)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Por favor, ingresa un correo electrónico válido.'
+      });
+      return;
     }
+    if (!isValidPassword(password)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'La contraseña debe tener al menos 6 caracteres.'
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const user = await register({ first_name: name, email, password });
+      console.log(user);
+      navigation.navigate('LoginScreen')
+      Toast.show({
+        type: 'succes',
+        text1: 'Registro Exitoso',
+        text2: 'Te has registrado correctamente.'
+      });     
+    } catch (error) {
+      console.error('Error al intentar registrarse:', error);
+      Toast.show({
+        type: 'succes',
+        text1: 'Error',
+        text2: 'Hubo un error al intentar registrarse.'
+      });   
+    } finally{
+      setLoading(false);
+    }
+
   };
 
   return (
@@ -43,6 +89,7 @@ const SignUpScreen:FC<Props> = ({navigation}) => {
         </TouchableOpacity>
 
       </View>
+      {loading && <Loader />}
     </View>
   );
 };

@@ -1,36 +1,78 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Input, Button } from '../../components';
+import { Input, Button ,Loader} from '../../components';
 import { requestPasswordReset } from '../../services/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists';
+import Toast from 'react-native-toast-message';
 
 type Props = StackScreenProps<AuthStackParamList,"PassRecScreen">;
 
 const PassRecScreen:FC<Props> = ({navigation}) => {
     const [email, setEmailRecovery] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const isValidEmail = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
 
     const handlePasswordRecovery = async () => {
-      if (email) {
+
+      if (!email) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Por favor, introduce tu correo electrónico.'
+        });
+        return;
+      } 
+      
+      if (!isValidEmail(email)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Por favor, ingresa un correo electrónico válido.'
+        });
+        return;
+      }
+
         try {
+          setLoading(true);
           await requestPasswordReset({ email });
           navigation.navigate('ChangePassScreen')
-          alert('Por favor, revisa tu correo electrónico para las instrucciones de recuperación.');
+          Toast.show({
+            type: 'info',
+            text1: 'Error',
+            text2: 'Por favor, revisa tu correo electrónico para las instrucciones de recuperación.'
+          });
         } catch (error) {
           console.error('Error al intentar recuperar la contraseña:', error);
           
           const errMessage = (error as Error).message; // Aserción de tipo
     
           if (errMessage === 'User not found') {
-            alert('No se encontró un usuario con ese correo electrónico.');
+            Toast.show({
+              type: 'error',
+              text1: 'Error',
+              text2: 'No se encontró un usuario con ese correo electrónico.'
+            });
+            
           } else {
-            alert('Error al intentar recuperar la contraseña. Inténtalo de nuevo más tarde.');
+            Toast.show({
+              type: 'error',
+              text1: 'Error',
+              text2: 'Error al intentar recuperar la contraseña. Inténtalo de nuevo más tarde.'
+            });
           }
+        } finally{
+          setLoading(false);
         }
-      } else {
-        alert('Por favor, introduce tu correo electrónico.');
-      }
+        
+
+
+      
     };
     
     return (
@@ -38,6 +80,8 @@ const PassRecScreen:FC<Props> = ({navigation}) => {
           <Text>Pass</Text>          
           <Input placeholder='Correo Electronico' onChangeText={(text) => setEmailRecovery(text)} />
           <Button title='Recuperar' onPress={handlePasswordRecovery} />
+          {loading && <Loader />}
+
         </View>
       );
 }

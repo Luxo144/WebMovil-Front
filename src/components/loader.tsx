@@ -2,10 +2,10 @@ import React,{FC} from "react";
 import {View, StyleSheet} from 'react-native';
 import LottieView from 'lottie-react-native'
 
-const Loader:FC = (props) => {
+const Loader:FC = () => {
     return(
         <View style={[StyleSheet.absoluteFillObject,styles.container]}>
-            <LottieView source={require('../../assets/loading.json')} autoPlay loop/>
+            <LottieView source={require('../../assets/loader1.json')} autoPlay loop style={{ width: 200, height: 200 }}/>
         </View>
     )
 
