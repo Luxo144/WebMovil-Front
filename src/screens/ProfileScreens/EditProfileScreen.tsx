@@ -24,7 +24,7 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
     const [ubicacion, setUbicacion] = useState("");
     const [trabajo, setTrabajo] = useState("");
     const [loading,setLoading] = useState(false);
-
+    
     const isValidEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -40,7 +40,7 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
           const fetchData = async () => {
               try {
                   const token = await getToken(); // Asegúrate de esperar la promesa aquí.
-                  console.log("Token: ", token)
+                  console.log("Tokenfetch: ", token)
                   if (token) { // Verifica que el token no sea null antes de proceder.
                       const details = await getUserData(token);
                       if(!("error" in details)){
@@ -62,7 +62,7 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
         
       }, []);
 
-    const handleUpdate = () => {
+    const handleUpdate =  async () => {
 
         setImage("https://via.placeholder.com/150");
         if (!nick || !nombre || !trabajo || !ubicacion || !phone || !email){
@@ -71,6 +71,7 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
                 text1: 'Error',
                 text2: 'Porfavor llene los campos.'
               });
+              return;
         }
 
         if(!isValidEmail(email)){
@@ -79,6 +80,7 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
                 text1: 'Error',
                 text2: 'Ingrese un email valido'
               });
+              return;
         }
         if (!isValidPhoneNumber(phone)){
             Toast.show({
@@ -86,10 +88,11 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
                 text1: 'Error',
                 text2: 'Ingrese un numero valido (9 digitos)'
               });
+              return;
         }
 
         const update: UpdateUserDto = {
-            email: "",
+            email: email,
             nickname: nick,
             first_name: nombre,
             last_name: "null",
@@ -98,11 +101,14 @@ const EditProfileScreen: FC<Props> = ({navigation}) => {
             profile_picture: image,
             contact: phone,
         }
-        const token = getToken();
-        if(typeof token == 'string'){
+        const tok =  await getToken();
+        console.log("Update: ", update)
+        console.log("Tokennnn: ", tok)
+
+        if(typeof tok == 'string'){
             try{
                 setLoading(true);
-                const response =  updateUserData(update,token);
+                const response =  updateUserData(update,tok);
                 if('error' in response) throw new Error();
                 
                 navigation.goBack();

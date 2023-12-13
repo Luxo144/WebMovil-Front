@@ -54,11 +54,11 @@ const ProfileScreen:FC<Props> = () =>{
         <View style={styles.userInfoSection}>
           <View style={styles.row}>
           <Icon name='account-box' color='#777777' size={20}/>           
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>{userDetails.nickname}</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>{userDetails.profile.nickname}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='card-account-details' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>{userDetails.first_name}</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}}>{userDetails.profile.first_name}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='email' color='#777777' size={20}/>
@@ -66,15 +66,15 @@ const ProfileScreen:FC<Props> = () =>{
           </View>
           <View style={styles.row}>
           <Icon name='phone-dial' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.phone}</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.profile.contact}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='source-commit-start-next-local' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.ubication}</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.profile.location}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='clipboard-text-outline' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.job_title}</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.profile.job_position}</Text>
           </View>
         </View>
 

@@ -116,6 +116,7 @@ export const getUserData = async (token: string): Promise<UserDataResponse | Api
 
 //actualizar datos del usuario
 export const updateUserData = async (userData: UpdateUserDto, token: string): Promise<ApiResponseError | ApiResponseSuccess> => {
+  console.log("update",userData);
   const response = await fetch(`${BASE_URL}/update`, {
     method: 'PUT',
     headers: {
