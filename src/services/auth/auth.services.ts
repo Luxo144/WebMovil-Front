@@ -1,63 +1,45 @@
 import { 
   ChangePassword, 
-  CreateUserDto, 
-  LoginUserDto, 
+  RegisterRequest, 
+  LoginRequest, 
   ResetPasswordDto, 
   UpdateUserDto, 
   RequestPasswordReset,
-  ApiResponseSuccess,
-  ApiResponseError,
   LoginSuccessResponse,
   UserDataResponse
-} from '../types/user';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+} from '../../types/auth/user';
+import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
+import { storeToken, getToken, removeToken } from '../token.service';
 const BASE_URL = "http://192.168.117.1:3009/auth";
-const TOKEN_STORAGE_KEY = '@accessToken';
 
-export const storeToken = async (token: string): Promise<void> => {
-  try {
-    await AsyncStorage.setItem(TOKEN_STORAGE_KEY, token);
-  } catch (e) {
-    console.error("Error al guardar el token", e);
-  }
-};
-
-export const getToken = async (): Promise<string | null> => {
-  try {
-    return await AsyncStorage.getItem(TOKEN_STORAGE_KEY);
-  } catch (e) {
-    console.error("Error al obtener el token", e);
-    return null;
-  }
-};
-
-export const removeToken = async (): Promise<void> => {
-  try {
-    await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
-  } catch (e) {
-    console.error("Error al remover el token", e);
-  }
-};
 
 //register
-export const register = async (userData: CreateUserDto): Promise<ApiResponseError | ApiResponseSuccess> => {
-  const response = await fetch(`${BASE_URL}/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
-  console.log('Datos enviados:', JSON.stringify(userData));
-  const data = await response.json() as ApiResponseSuccess | ApiResponseError;; 
-  return data;
+export const registerUser = async (registerData: RegisterRequest): Promise<ApiResponseError | ApiResponseSuccess> => {
+  try {
+      const response = await fetch(`${BASE_URL}/register`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(registerData),
+      });
+
+      if (!response.ok) {
+          const errorResponse: ApiResponseError = await response.json();
+          return errorResponse;
+      }
+
+      const successResponse: ApiResponseSuccess = await response.json();
+      return successResponse;
+  } catch (error) {
+      // Aquí deberías manejar los errores de red u otros errores inesperados
+      console.error('Error during registration:', error);
+      throw error;
+  }
 };
 
 //login
-export const login = async (loginData: LoginUserDto): Promise<LoginSuccessResponse | ApiResponseError> => {
-  console.log('Datos enviados:', JSON.stringify(loginData));
+export const login = async (loginData: LoginRequest): Promise<LoginSuccessResponse | ApiResponseError> => {
   const response = await fetch(`${BASE_URL}/login`, {
     method: 'POST',
     headers: {
@@ -113,17 +95,24 @@ export const resetPasswordLogin = async (change: ChangePassword, token: string):
 }
 
 //obtener datos del usuario enviando el token
-export const getUserData = async (token: string): Promise<UserDataResponse| ApiResponseError> => {
+export const getUserData = async (token: string): Promise<UserDataResponse | ApiResponseError> => {
   const response = await fetch(`${BASE_URL}/me`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      },
   });
-  const data = await response.json() as UserDataResponse | ApiResponseError;
+
+  if (!response.ok) {
+      const errorResponse: ApiResponseError = await response.json();
+      return errorResponse;
+  }
+
+  const data: UserDataResponse = await response.json();
   return data;
 };
+
 
 //actualizar datos del usuario
 export const updateUserData = async (userData: UpdateUserDto, token: string): Promise<ApiResponseError | ApiResponseSuccess> => {

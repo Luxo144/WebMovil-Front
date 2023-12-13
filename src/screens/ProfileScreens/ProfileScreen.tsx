@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getToken, getUser } from '../../services/auth.services';
-import { getProfile } from '../../services/auth.services';
+import { getToken, getUser } from '../../services/auth/auth.services';
+import { getProfile } from '../../services/auth/auth.services';
 import { ProfileStackParamList } from "../../../ParamLists";
 import { StackScreenProps } from "@react-navigation/stack";
 

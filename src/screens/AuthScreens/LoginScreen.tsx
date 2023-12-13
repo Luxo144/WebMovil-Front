@@ -2,7 +2,7 @@ import React, { FC, useState,useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Loader ,Button} from '../../components';
-import { login } from '../../services/auth.services';
+import { login } from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists'
 import AuthContext from '../../navigation/AuthContext';

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Button, Loader } from '../../components';
-import { register } from '../../services/auth.services';
+import { register } from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists';
 import Toast from 'react-native-toast-message';

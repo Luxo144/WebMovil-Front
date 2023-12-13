@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TextInput, Image, Button,TouchableOpacity,Image
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ImagePicker from 'react-native-image-crop-picker';
-import { UpdateProfileData } from '../../types/user';
-import { updateProfileData } from '../../services/auth.services';
+import { UpdateProfileData } from '../../types/auth/user';
+import { updateProfileData } from '../../services/auth/auth.services';
 import { ProfileStackParamList } from "../../../ParamLists";
 import { StackScreenProps } from "@react-navigation/stack";
 

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Input, Button , Loader} from '../../components'; // Asumiendo que tienes estos componentes
 //import { PasswordResetCode } from '../../types/user';
-import { resetPassword, resetPasswordLogin } from '../../services/auth.services';
+import { resetPassword, resetPasswordLogin } from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists';
 import Toast from 'react-native-toast-message';

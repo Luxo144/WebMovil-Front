@@ -4,7 +4,6 @@ export interface User {
     password: string;
 }
 
-  
 export interface Token{
   id: number;
   token: string;
@@ -25,20 +24,22 @@ export interface Profile{
   user_id: number;
 }
 
-export interface ChangePassword{
-  password: string;
-  newPassword: string;
-}
+//datos de envio
 
-export interface CreateUserDto {
+export interface RegisterRequest {
   first_name: string;
   email: string;
   password: string;
 }
 
-export interface LoginUserDto{
+export interface LoginRequest{
   email: string;
   password: string;
+}
+
+export interface ChangePassword{
+  password: string;
+  newPassword: string;
 }
 
 export interface ResetPasswordDto{
@@ -61,18 +62,7 @@ export interface RequestPasswordReset{
   email: string;
 }
 
-// Interfaces para respuestas exitosas y de error
-
-export interface ApiResponseSuccess {
-  message: string;
-}
-
-export interface ApiResponseError {
-  statusCode: number;
-  message: string;
-}
-
-// Específicas para operaciones
+// Específicas para operaciones de respuestas
 
 export interface LoginSuccessResponse {
   accessToken: {
