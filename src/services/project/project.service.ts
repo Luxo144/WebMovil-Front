@@ -10,6 +10,7 @@ import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer'
 
 const BASE_URL = 'http://192.168.117.1:3009/projects'
 
+//crear un proyecto
 export const createProject = async (projectData: CreateProjectRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/create-project`, {
         method: 'POST',

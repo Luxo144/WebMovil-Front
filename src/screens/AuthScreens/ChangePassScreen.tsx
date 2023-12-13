@@ -55,7 +55,7 @@ const ChangePassScreen: FC<Props> = ({ navigation }) => {
         throw new Error;
       } else {
         Toast.show({
-          type: 'succes',
+          type: 'success',
           text1: 'Exito',
           text2: 'Contraseña cambiada correctamente.'
         }); 

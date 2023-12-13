@@ -1,17 +1,17 @@
 import React, { FC, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getToken, getUser } from '../../services/auth/auth.services';
-import { getProfile } from '../../services/auth/auth.services';
 import { ProfileStackParamList } from "../../../ParamLists";
 import { StackScreenProps } from "@react-navigation/stack";
+import { getToken } from '../../services/token.service';
+import  { getUserData, updateUserData } from '../../services/auth/auth.services';
+
 
 type Props = StackScreenProps<ProfileStackParamList,"ProfileScreen">
 
 const ProfileScreen:FC<Props> = () =>{
 
     const [userDetails, setUserDetails] = useState<any | null>(null);
-    const [correo, setCorreo] = useState<any | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,12 +19,9 @@ const ProfileScreen:FC<Props> = () =>{
                 const token = await getToken(); // Asegúrate de esperar la promesa aquí.
                 console.log("Token: ", token)
                 if (token) { // Verifica que el token no sea null antes de proceder.
-                    const details = await getProfile();
+                    const details = await getUserData(token);
                     console.log("Details: ", details)
                     setUserDetails(details);
-                    const correo = await getUser();
-                    console.log("Correo: ", correo)
-                    
                 } else {
                     console.error("Token is null.");
                 }
@@ -59,7 +56,7 @@ const ProfileScreen:FC<Props> = () =>{
           </View>
           <View style={styles.row}>
           <Icon name='email' color='#777777' size={20}/>
-          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{"pipe.ignacioh@gmail.com"}</Text>
+          <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.email}</Text>
           </View>
           <View style={styles.row}>
           <Icon name='phone-dial' color='#777777' size={20}/>

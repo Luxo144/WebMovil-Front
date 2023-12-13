@@ -7,6 +7,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists'
 import AuthContext from '../../navigation/AuthContext';
 import Toast from 'react-native-toast-message';
+import { responseInvitation } from '../../services/project/projectInvitation.service';
 
 type Props = StackScreenProps<AuthStackParamList,"LoginScreen">;
 
@@ -57,7 +58,7 @@ const LoginScreen: FC<Props> = ({navigation}) => {
       const response = await login({ email, password });
       console.log(response);
       Toast.show({
-        type: 'succes',
+        type: 'success',
         text1: 'Operacion exitosa',
         text2: 'Inicio de sesión exitoso.'
       }); 
@@ -65,6 +66,7 @@ const LoginScreen: FC<Props> = ({navigation}) => {
       setUser(true);
     } catch (error) {
       console.error('Error al intentar iniciar sesión:', error);
+      console.log("response", );
       Toast.show({
         type: 'error',
         text1: 'Error',

@@ -55,6 +55,7 @@ const SignUpScreen:FC<Props> = ({navigation}) => {
     try {
       setLoading(true);
       const response = await registerUser({ first_name: name, email, password });
+      console.log(response);
       if('error' in response){
         Toast.show({
           type: 'error',
@@ -63,7 +64,7 @@ const SignUpScreen:FC<Props> = ({navigation}) => {
         });
       }else{       
         Toast.show({
-          type: 'succes',
+          type: 'success',
           text1: 'Registro Exitoso',
           text2: 'Te has registrado correctamente.'
         });
@@ -71,8 +72,9 @@ const SignUpScreen:FC<Props> = ({navigation}) => {
       }  
     } catch (error) {
       console.error('Error al intentar registrarse:', error);
+      console.log("response", );
       Toast.show({
-        type: 'succes',
+        type: 'error',
         text1: 'Error',
         text2: 'Hubo un error al intentar registrarse.'
       });   

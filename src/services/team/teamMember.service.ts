@@ -9,7 +9,7 @@ import {
 } from '../../types/team/teams';
 
 const BASE_URL = 'http://192.168.117.1:3009/members';
-
+//agregan un miembro a un equipo no deberia ocuparse
 export const addMember = async (memberData: UpdateMemberRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/add-member`, {
         method: 'POST',
@@ -26,7 +26,7 @@ export const addMember = async (memberData: UpdateMemberRequest, token: string):
     const successResponse: ApiResponseSuccess = await response.json();
     return successResponse;
 };
-
+//obtener todos los miembros de un equipo
 export const getAllMembersTeam = async (teamId: number, token: string): Promise<TeamMembers[] | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/get-members-team/${teamId}`, {
         method: 'GET',
@@ -42,7 +42,7 @@ export const getAllMembersTeam = async (teamId: number, token: string): Promise<
     const data: TeamMembers[] = await response.json();
     return data;
 }
-
+//actualizar un miembro de un equipo rol
 export const updateMember = async (memberData: UpdateMemberRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/update-member`, {
         method: 'PATCH',
@@ -59,7 +59,7 @@ export const updateMember = async (memberData: UpdateMemberRequest, token: strin
     const successResponse: ApiResponseSuccess = await response.json();
     return successResponse;
 }
-
+//eliminar un miembro de un equipo
 export const deleteMember = async (memberData: DeleteMemberRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/delete-member`, {
         method: 'DELETE',
@@ -76,7 +76,7 @@ export const deleteMember = async (memberData: DeleteMemberRequest, token: strin
     const successResponse: ApiResponseSuccess = await response.json();
     return successResponse;
 }
-
+//obtener todos los equipos de un usuario
 export const getAllTeamsOfUser = async (userId: number, token: string): Promise<Team[] | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/get-teams-user/${userId}`, {
         method: 'GET',

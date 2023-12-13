@@ -141,6 +141,7 @@ export const deleteUser = async (token: string): Promise<ApiResponseError | ApiR
   return data;
 };
 
+//request password reset
 export const requestPasswordReset = async (resetRequest: RequestPasswordReset): Promise<ApiResponseError| ApiResponseSuccess> => {
   const response = await fetch(`${BASE_URL}/request-password-reset`, {
     method: 'POST',
@@ -154,7 +155,7 @@ export const requestPasswordReset = async (resetRequest: RequestPasswordReset): 
   return data;
 };
 
-
+//reset password con code
 export const resetPassword = async (resetData: ResetPasswordDto): Promise<ApiResponseError | ApiResponseSuccess> => {
   const response = await fetch(`${BASE_URL}/reset-password`, {
     method: 'POST',

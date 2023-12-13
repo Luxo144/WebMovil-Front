@@ -7,6 +7,7 @@ import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer'
 
 const BASE_URL = 'http://192.168.117.1:3009/invitation';
 
+//crear una invitación
 export const createInvitation = async (invitationData: CreateInvitationRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/create-invitation`, {
         method: 'POST',
@@ -24,6 +25,7 @@ export const createInvitation = async (invitationData: CreateInvitationRequest, 
     return successResponse;
 };
 
+//obtener todas las invitaciones de un usuario
 export const getAllInvitationsOfUser = async (token: string): Promise<GetInvitationsResponse[] | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/get-invitations`, {
         method: 'GET',
@@ -40,6 +42,7 @@ export const getAllInvitationsOfUser = async (token: string): Promise<GetInvitat
     return data;
 }
 
+//aceptar una invitación
 export const acceptInvitation = async (invitationId: number, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/${invitationId}/accept`, {
         method: 'PATCH',
@@ -55,7 +58,7 @@ export const acceptInvitation = async (invitationId: number, token: string): Pro
     const successResponse: ApiResponseSuccess = await response.json();
     return successResponse;
 }
-
+//rechazar una invitación
 export const rejectInvitation = async (invitationId: number, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/${invitationId}/reject`, {
         method: 'PATCH',
