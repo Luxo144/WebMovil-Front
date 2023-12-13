@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Input, Button , Loader} from '../../components'; // Asumiendo que tienes estos componentes
 //import { PasswordResetCode } from '../../types/user';
-import { resetPassword, resetPasswordLogin } from '../../services/auth/auth.services';
+import { resetPassword} from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists';
 import Toast from 'react-native-toast-message';
@@ -47,23 +47,20 @@ const ChangePassScreen: FC<Props> = ({ navigation }) => {
       });
       return;
     }
-    /*
+    
     try {
       setLoading(true);
-      console.log("code",code)
-      console.log("newPass:", newPassword)
-      //crear un objeto de tipo PasswordResetCode
-      const codeObj: PasswordResetCode = {
-        token: code,
-        newPassword: newPassword
+      const response = await resetPassword({token:code,newPassword});
+      if('error' in response){
+        throw new Error;
+      } else {
+        Toast.show({
+          type: 'succes',
+          text1: 'Exito',
+          text2: 'Contraseña cambiada correctamente.'
+        }); 
+        navigation.navigate('LoginScreen');
       }
-      const response = await resetPassword(codeObj);
-      Toast.show({
-        type: 'succes',
-        text1: 'Exito',
-        text2: 'Contraseña cambiada correctamente.'
-      }); 
-      navigation.navigate('LoginScreen'); // Redirige al usuario al Login
     } catch (error) {
       console.error(error);
       Toast.show({
@@ -75,7 +72,7 @@ const ChangePassScreen: FC<Props> = ({ navigation }) => {
     } finally{
       setLoading(false);
     }
- */
+ 
   
   };
 

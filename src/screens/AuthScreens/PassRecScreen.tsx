@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Button ,Loader} from '../../components';
 import { requestPasswordReset } from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -40,32 +39,26 @@ const PassRecScreen:FC<Props> = ({navigation}) => {
 
         try {
           setLoading(true);
-          await requestPasswordReset({ email });
-          navigation.navigate('ChangePassScreen')
-          Toast.show({
-            type: 'info',
-            text1: 'Error',
-            text2: 'Por favor, revisa tu correo electrónico para las instrucciones de recuperación.'
-          });
-        } catch (error) {
-          console.error('Error al intentar recuperar la contraseña:', error);
-          
-          const errMessage = (error as Error).message; // Aserción de tipo
-    
-          if (errMessage === 'User not found') {
+          const response = await requestPasswordReset({ email });
+          if ('error' in response){
+            throw new Error;
+          } else{
+            navigation.navigate('ChangePassScreen')
             Toast.show({
-              type: 'error',
+              type: 'info',
               text1: 'Error',
-              text2: 'No se encontró un usuario con ese correo electrónico.'
+              text2: 'Por favor, revisa tu correo electrónico para las instrucciones de recuperación.'
             });
-            
-          } else {
+          }
+
+        } catch (error) {
+
             Toast.show({
               type: 'error',
               text1: 'Error',
               text2: 'Error al intentar recuperar la contraseña. Inténtalo de nuevo más tarde.'
             });
-          }
+          
         } finally{
           setLoading(false);
         }

@@ -22,7 +22,7 @@ const LoginScreen: FC<Props> = ({navigation}) => {
   };
 
   const isValidPassword = (password: string) => {
-    // Ejemplo: Validar que la contraseña tenga al menos 6 caracteres
+    
     return password.length >= 6;
   };
 

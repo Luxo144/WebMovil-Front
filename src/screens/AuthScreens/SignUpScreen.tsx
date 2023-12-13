@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Button, Loader } from '../../components';
-import { register } from '../../services/auth/auth.services';
+import { registerUser } from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists';
 import Toast from 'react-native-toast-message';
@@ -54,14 +54,21 @@ const SignUpScreen:FC<Props> = ({navigation}) => {
 
     try {
       setLoading(true);
-      const user = await register({ first_name: name, email, password });
-      console.log(user);
-      navigation.navigate('LoginScreen')
-      Toast.show({
-        type: 'succes',
-        text1: 'Registro Exitoso',
-        text2: 'Te has registrado correctamente.'
-      });     
+      const response = await registerUser({ first_name: name, email, password });
+      if('error' in response){
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Error al intentar registrarse'
+        });
+      }else{       
+        Toast.show({
+          type: 'succes',
+          text1: 'Registro Exitoso',
+          text2: 'Te has registrado correctamente.'
+        });
+        navigation.navigate('LoginScreen')   
+      }  
     } catch (error) {
       console.error('Error al intentar registrarse:', error);
       Toast.show({
