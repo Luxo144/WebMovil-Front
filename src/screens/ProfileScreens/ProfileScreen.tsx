@@ -5,15 +5,19 @@ import { ProfileStackParamList } from "../../../ParamLists";
 import { StackScreenProps } from "@react-navigation/stack";
 import { getToken } from '../../services/token.service';
 import  { getUserData, updateUserData } from '../../services/auth/auth.services';
-
+import { useIsFocused } from '@react-navigation/native';
+import { Loader } from '../../components';
 
 type Props = StackScreenProps<ProfileStackParamList,"ProfileScreen">
 
 const ProfileScreen:FC<Props> = () =>{
 
     const [userDetails, setUserDetails] = useState<any | null>(null);
+    const [loading,setLoading] = useState(true);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
+      if(isFocused) {
         const fetchData = async () => {
             try {
                 const token = await getToken(); // Asegúrate de esperar la promesa aquí.
@@ -27,11 +31,13 @@ const ProfileScreen:FC<Props> = () =>{
                 }
             } catch (error) {
                 console.error("Error fetching user details:", error);
+            } finally{
+              setLoading(false);
             }
         };
-    
         fetchData(); // Invoca la función fetchData.
-    }, []);
+      }
+    }, [isFocused]);
     
 
     if (!userDetails) {
@@ -71,6 +77,8 @@ const ProfileScreen:FC<Props> = () =>{
           <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.job_title}</Text>
           </View>
         </View>
+
+        {loading && <Loader />}
       </View>
     );
 
