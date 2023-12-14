@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState , useContext} from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ProfileStackParamList } from "../../../ParamLists";
@@ -6,7 +6,10 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { getToken } from '../../services/token.service';
 import  { getUserData, updateUserData } from '../../services/auth/auth.services';
 import { useIsFocused } from '@react-navigation/native';
-import { Loader } from '../../components';
+import { Loader, Button } from '../../components';
+import AuthContext from '../../navigation/AuthContext';
+import { logout } from '../../services/auth/auth.services';
+import Toast from 'react-native-toast-message';
 
 type Props = StackScreenProps<ProfileStackParamList,"ProfileScreen">
 
@@ -15,6 +18,7 @@ const ProfileScreen:FC<Props> = () =>{
     const [userDetails, setUserDetails] = useState<any | null>(null);
     const [loading,setLoading] = useState(true);
     const isFocused = useIsFocused();
+    const { setUser } = useContext(AuthContext);
 
     useEffect(() => {
       if(isFocused) {
@@ -41,11 +45,34 @@ const ProfileScreen:FC<Props> = () =>{
     
 
     if (!userDetails) {
-        return <Text>Loading...</Text>; // Puedes mostrar un indicador de carga aquí.
+        return <Loader/>; // Puedes mostrar un indicador de carga aquí.
     }
 
     console.log(userDetails);
     
+    const handleLogout = async () =>{
+      setLoading(true);
+      const response = await logout();
+      setLoading(false);
+      if ('error' in response){
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Error al cerrar sesión'
+        });
+        return;
+      } 
+      Toast.show({
+        type: 'success',
+        text1: 'Exito',
+        text2: 'Sesión cerrada con éxito'
+      });
+      setUser(false);
+
+      return;  
+      
+    }
+
     return(
       <View style={styles.container}>
           <View>
@@ -76,6 +103,8 @@ const ProfileScreen:FC<Props> = () =>{
           <Icon name='clipboard-text-outline' color='#777777' size={20}/>
           <Text style={{color:'#777777', marginLeft: 20, fontSize:20}} >{userDetails.profile.job_position}</Text>
           </View>
+          <Button title='Cerrar sesión' onPress={handleLogout}/>
+
         </View>
 
         {loading && <Loader />}

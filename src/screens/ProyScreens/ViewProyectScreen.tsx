@@ -19,6 +19,11 @@ const ViewProyectScreen: FC<Props> = ({navigation})=>{
         navigation.navigate('ProyMembersScreen');
     };
 
+    const handleViewTasks = () => {
+        // Navegación a la pantalla para ver miembros del proyecto
+        navigation.navigate('TaskScreen');
+    };
+
     const handleDeleteProyect = () => {
         // Confirmación para eliminar el equipo
         Alert.alert(
@@ -51,10 +56,18 @@ const ViewProyectScreen: FC<Props> = ({navigation})=>{
             />
 
             <Button
+                title="Ver Tareas"
+                onPress={handleViewTasks}
+            />
+            
+            <Button
                 title="Eliminar Proyecto"
                 onPress={handleDeleteProyect}
                 style={styles.deleteButton}
             />
+
+
+
         </View>
     );
 };

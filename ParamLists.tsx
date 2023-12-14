@@ -29,4 +29,5 @@ export type ProyStackParamList = {
     ProyMembersScreen: undefined;
     EditProyScreen: undefined;
     AddProyScreen: undefined;
+    TaskScreen:undefined;
 }
