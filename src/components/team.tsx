@@ -3,11 +3,12 @@ import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface TeamData {
-  id: string;
+  id: number;
   name: string;
   description: string;
-  date: string;
-  ownerId: string;
+  createdAt: string;
+  createdByUserId: number;
+  code: string
 }
 
 interface TeamProps {
@@ -19,9 +20,9 @@ const Team:React.FC<TeamProps> = ({ team,onView }) => {
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
-        <Text style={styles.teamName}>{team.name}</Text>
+        <Text style={styles.teamName}>{team.name + ' '+ team.code}</Text>
         <Text>{team.description}</Text>
-        <Text>Creado el: {team.date}</Text>
+        <Text>Creado el: {team.createdAt.split('T')[0]}</Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={() => onView()}>

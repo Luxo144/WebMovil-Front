@@ -3,22 +3,67 @@ import { View, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StackScreenProps } from '@react-navigation/stack';
 import {TeamStackParamList} from '../../../ParamLists'
+import useIdStore from '../../services/useIdStore';
+import Toast from 'react-native-toast-message';
+import { getToken } from '../../services/token.service';
+import { updateTeam } from '../../services/team/team.service';
+import { Loader } from '../../components';
 
 type Props = StackScreenProps<TeamStackParamList,"EditTeamScreen">
 
 
-const EditTeamScreen:FC<Props> = () => {
+const EditTeamScreen:FC<Props> = ({navigation}) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const teamId = useIdStore(state => state.teamId);
+  const [loading, setLoading] = useState(false);
 
-  // Suponemos que pasas el equipo a editar a través de la navegación
 
-
-  const handleEdit = () => {
-    
+  const handleEdit = async  () => {
+    if (name.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validación',
+        text2: 'El nombre del equipo debe tener al menos 6 caracteres.'
+      });
+      return;
+    }
+  
+    if (!description) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validación',
+        text2: 'Por favor, ingrese una descripción para el equipo.'
+      });
+      return;
+    }
+    setLoading(true); // Activa el indicador de carga
+    const token = await getToken();
+    if (token && teamId) {
+      const teamData = { idTeam: teamId, name, description };
+      const response = await updateTeam(teamData, token);
+      console.log(response);
+      if ('error' in response) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: response.error.message || 'Error al actualizar el equipo.'
+        });
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Éxito',
+          text2: 'Equipo actualizado con éxito.'
+        });
+        
+      }
+      navigation.goBack();  
+    }
+    setLoading(false);
   };
   return (
     <ScrollView style={styles.container}>
+      {loading && <Loader />}
       <View style={styles.inputContainer}>
         <Icon name="account-group" size={30} style={styles.icon} />
         <TextInput

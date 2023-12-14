@@ -5,7 +5,7 @@ import {
     TeamMembers,
 } from '../../types/team/teamMember';
 import {
-    Team
+    Teams
 } from '../../types/team/teams';
 
 const BASE_URL = 'http://192.168.117.1:3009/members';
@@ -77,8 +77,8 @@ export const deleteMember = async (memberData: DeleteMemberRequest, token: strin
     return successResponse;
 }
 //obtener todos los equipos de un usuario
-export const getAllTeamsOfUser = async (userId: number, token: string): Promise<Team[] | ApiResponseError> => {
-    const response = await fetch(`${BASE_URL}/get-teams-user/${userId}`, {
+export const getAllTeamsOfUser = async (token: string): Promise<Teams[] | ApiResponseError> => {
+    const response = await fetch(`${BASE_URL}/get-teams-user/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -89,6 +89,24 @@ export const getAllTeamsOfUser = async (userId: number, token: string): Promise<
         const errorResponse: ApiResponseError = await response.json();
         return errorResponse;
     }
-    const data: Team[] = await response.json();
+    const data: Teams[] = await response.json();
     return data;
+}
+
+//salirse de un equipo
+export const leaveTeam = async (teamId: number, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
+    const response = await fetch(`${BASE_URL}/leave-team`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ teamId })
+    });
+    if (!response.ok) {
+        const errorResponse: ApiResponseError = await response.json();
+        return errorResponse;
+    }
+    const successResponse: ApiResponseSuccess = await response.json();
+    return successResponse;
 }

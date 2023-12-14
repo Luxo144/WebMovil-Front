@@ -12,7 +12,16 @@ export interface GetInvitationsResponse{
     invitedUserId: number;
     status: string;
     invitationDate: string;
-    nameTeam: string;
-    codeTeam: string;
+    team: Team;
 }
 
+interface Team {
+  code: string;
+  createdAt: string;
+  createdByUserId: number;
+  deletedAt: string;
+  description: string;
+  id: number;
+  name: string;
+  updatedAt: string;
+}

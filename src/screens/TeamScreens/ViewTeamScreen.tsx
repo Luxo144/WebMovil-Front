@@ -1,14 +1,17 @@
-import React,{ FC, useState } from 'react';
+import React,{ FC, useId, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import Button from '../../components/button'; // Asegúrate de que esta ruta sea correcta
 import { StackScreenProps } from '@react-navigation/stack';
 import {TeamStackParamList} from '../../../ParamLists'
-
+import Toast from 'react-native-toast-message';
+import { getToken } from '../../services/token.service';
+import { deleteTeam } from '../../services/team/team.service';
+import useIdStore from '../../services/useIdStore';
 type Props = StackScreenProps<TeamStackParamList,"ViewTeamScreen">
 
 
-const ViewTeamScreen:FC<Props> = ({navigation}) => {
-
+const ViewTeamScreen:FC<Props> = ({route, navigation}) => {
+    const [loading, setLoading] = useState(false);
     const handleEditTeam = () => {
         // Navegación a la pantalla de edición del equipo
         navigation.navigate('EditTeamScreen');
@@ -24,7 +27,8 @@ const ViewTeamScreen:FC<Props> = ({navigation}) => {
     }
 
     const handleDeleteTeam = () => {
-        // Confirmación para eliminar el equipo
+        const teamId = useIdStore.getState().teamId;
+        console.log(teamId);
         Alert.alert(
             "Eliminar Equipo",
             "¿Estás seguro de que quieres eliminar el equipo?",
@@ -35,8 +39,28 @@ const ViewTeamScreen:FC<Props> = ({navigation}) => {
                 },
                 {
                     text: "Eliminar",
-                    onPress: () => {
-                        // Aquí se maneja la lógica de eliminación del equipo
+                    onPress: async () => {
+                        setLoading(true);
+                        const token = await getToken(); // Asegúrate de obtener el token
+                        if (token && teamId) {
+                            const response = await deleteTeam(teamId, token);
+                            console.log(response);
+                            if ('error' in response) {
+                                Toast.show({
+                                    type: 'error',
+                                    text1: 'Error',
+                                    text2: response.error.message
+                                });
+                            } else {
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Éxito',
+                                    text2: response.message
+                                });
+                                // Aquí puedes navegar de vuelta o actualizar la lista de equipos
+                            }
+                        }
+                        setLoading(false);
                     }
                 }
             ]

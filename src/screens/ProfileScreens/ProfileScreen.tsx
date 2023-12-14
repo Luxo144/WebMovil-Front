@@ -10,11 +10,12 @@ import { Loader, Button } from '../../components';
 import AuthContext from '../../navigation/AuthContext';
 import { logout } from '../../services/auth/auth.services';
 import Toast from 'react-native-toast-message';
+import useIdStore from '../../services/useIdStore';
 
 type Props = StackScreenProps<ProfileStackParamList,"ProfileScreen">
 
 const ProfileScreen:FC<Props> = () =>{
-
+    const clearIds = useIdStore(state => state.clearIds);
     const [userDetails, setUserDetails] = useState<any | null>(null);
     const [loading,setLoading] = useState(true);
     const isFocused = useIsFocused();
@@ -61,7 +62,8 @@ const ProfileScreen:FC<Props> = () =>{
           text2: 'Error al cerrar sesión'
         });
         return;
-      } 
+      }
+      clearIds(); 
       Toast.show({
         type: 'success',
         text1: 'Exito',

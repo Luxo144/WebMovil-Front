@@ -1,19 +1,39 @@
 import {create} from 'zustand';
 
-const useIdStore = create(set => ({
+const useIdStore = create<IdState>(set => ({
   userId: null,
   teamId: null,
   projectId: null,
   memberId: null,
   taskId: null,
+  codeTeam: null,
 
-  setUserId: (userId:string) => set({ userId }),
-  setTeamId: (teamId:string) => set({ teamId }),
-  setProjectId: (projectId:string) => set({ projectId }),
-  setMemberId: (memberId:string) => set({ memberId }),
-  setTaskId: (taskId:string) => set({ taskId }),
+  setUserId: (userId) => set({ userId }),
+  setTeamId: (teamId) => set({ teamId }),
+  setProjectId: (projectId) => set({ projectId }),
+  setMemberId: (memberId) => set({ memberId }),
+  setTaskId: (taskId) => set({ taskId }),
+  setCodeTeam: (codeTeam) => set({ codeTeam }),
 
   clearIds: () => set({ userId: null, teamId: null, projectId: null, memberId: null, taskId: null })
 }));
 
 export default useIdStore;
+
+interface IdState {
+  userId: string | null;
+  teamId: number | null;
+  projectId: string | null;
+  memberId: string | null;
+  taskId: string | null;
+  codeTeam: string | null;
+
+  setUserId: (userId: string) => void;
+  setTeamId: (teamId: number) => void;
+  setProjectId: (projectId: string) => void;
+  setMemberId: (memberId: string) => void;
+  setTaskId: (taskId: string) => void;
+  setCodeTeam: (codeTeam: string) => void;
+
+  clearIds: () => void;
+}

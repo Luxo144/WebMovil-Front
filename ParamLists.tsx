@@ -16,7 +16,7 @@ export type TeamStackParamList = {
     AddTeamScreen: undefined;
     TeamInvitationScreen: undefined;
     ProyInvitationScreen: undefined;
-    ViewTeamScreen:undefined;
+    ViewTeamScreen: undefined;
     TeamMembersScreen: undefined;
     ProyMembersScreen: undefined;
     EditProyScreen: undefined;

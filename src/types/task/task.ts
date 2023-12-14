@@ -32,6 +32,8 @@ export interface GetTask{
     updatedAt: string;
     deletedAt: string;
     comments: string;
+    nameResponsible: string;
+    nameCreatedBy: string;
 }
 
 export interface FilterTask{

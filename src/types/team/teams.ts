@@ -15,7 +15,7 @@ export interface DeleteTeamRequest {
 }
 
 //response
-export interface Team {
+export interface Teams {
     id: number;
     name: string;
     description: string;

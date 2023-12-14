@@ -3,24 +3,24 @@ import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface ProyInvitationData{
-    id: string;
-    proyId: string;
-    invitedTeamId: string;
-    status: string;
-    invitationDate: string;
+  id: number;
+  status: string;
+  invitationDate: string;
+  nameProject: string;
+  codeProject: string;
 }
 
 interface InvitationProps {
     inv: ProyInvitationData;
-    onAccept: (invId: string) => void;
-    onDecline: (invId: string) => void;
+    onAccept: (invId: number) => void;
+    onDecline: (invId: number) => void;
 }
 
 const ProyInvitation:React.FC<InvitationProps> = ({ inv,onAccept,onDecline }) => {
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
-          <Text style={styles.teamName}>{inv.proyId}</Text>
+          <Text style={styles.teamName}>{inv.id}</Text>
           <Text>Te ha invitado a su proyecto</Text>
           <Text>Invitado el: {inv.invitationDate}</Text>
         </View>

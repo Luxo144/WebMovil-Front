@@ -64,7 +64,9 @@ export const getAllInvitations = async (projectId: number, token: string): Promi
 
 //obtener todas las invitaciones de un equipo
 export const getAllInvitationsTeam = async (codeTeam: string, token: string): Promise<InvitationProject[] | ApiResponseError> => {
-    const response = await fetch(`${BASE_URL}/team/${encodeURIComponent (codeTeam)}`, {
+    console.log(encodeURIComponent(codeTeam));
+    const code = encodeURIComponent(codeTeam);
+    const response = await fetch(`${BASE_URL}/team/${encodeURIComponent(code)}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

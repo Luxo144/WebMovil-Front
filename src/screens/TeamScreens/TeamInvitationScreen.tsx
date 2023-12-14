@@ -1,44 +1,119 @@
-import React,{ FC, useState } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity,FlatList } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import TeamInvitation from '../../components/teamInvitation';
-import { TeamStackParamList } from '../../../ParamLists';
 import { StackScreenProps } from '@react-navigation/stack';
-
-type Props = StackScreenProps<TeamStackParamList,"TeamInvitationScreen">
+import { TeamStackParamList } from '../../../ParamLists';
+import { getToken } from '../../services/token.service';
+import { acceptInvitation, getAllInvitationsOfUser, rejectInvitation } from '../../services/team/invitationTeam.service';
+import { GetInvitationsResponse } from '../../types/team/invitationTeam';
+import Toast from 'react-native-toast-message';
+import Loader from '../../components/loader';
+type Props = StackScreenProps<TeamStackParamList, "TeamInvitationScreen">
 
 const TeamInvitationScreen: FC<Props> = () => {
+  const [teamInvitations, setTeamInvitations] = useState<GetInvitationsResponse[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    const [teamInvitations, setTeamInvitations] = useState([
-        { id: '1', teamId: 'Equipo A', invitedUserId: '1', status: 'Pendiente', invitationDate:'01-01-2023' },
-        { id: '2', teamId: 'Equipo B', invitedUserId: '2', status: 'Rechazada', invitationDate:'01-01-2023' },
-      ]);
+  useEffect(() => {
+    const loadInvitations = async () => {
+      setLoading(true);
+      const token = await getToken();
+      if (token) {
+        const response = await getAllInvitationsOfUser(token);
+        console.log(response);
+        if (Array.isArray(response)) {
+          setTeamInvitations(response);
+        } else {
 
-    const handleAccept = (invId:string) => {
-        setTeamInvitations(teamInvitations.filter(inv => inv.id !== invId));
+          console.log('Error al obtener invitaciones:', response);
+        }
+      }
+      setLoading(false);
     };
 
-    const handleDecline = (invId:string) => {
-        setTeamInvitations(teamInvitations.filter(inv => inv.id !== invId));
+    loadInvitations();
+  }, []);
+
+  const handleAccept = async (invId: number) => {
+    setLoading(true);
+    const token = await getToken();
+    if (token) {
+        const response = await acceptInvitation(invId, token);
+        if ('error' in response) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'No se pudo aceptar la invitación.'
+            });
+        } else {
+            setTeamInvitations(prevInvitations => 
+                prevInvitations.filter(inv => inv.id !== invId)
+            );
+            Toast.show({
+                type: 'success',
+                text1: 'Éxito',
+                text2: 'Invitación aceptada con éxito.'
+            });
+        }
     }
+    setLoading(false);
+};
 
-    return(
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <FlatList
-          data={teamInvitations}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <TeamInvitation inv={item}
-          onAccept={handleAccept}
-          onDecline={handleDecline}  
-          />}
-          
-        />
-      </View>
-    );
-}
+const handleDecline = async (invId: number) => {
+    const token = await getToken();
+    if (token) {
+        const response = await rejectInvitation(invId, token);
+        if ('error' in response) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'No se pudo rechazar la invitación.'
+            });
+        } else {
+            setTeamInvitations(prevInvitations => 
+                prevInvitations.filter(inv => inv.id !== invId)
+            );
+            Toast.show({
+                type: 'success',
+                text1: 'Éxito',
+                text2: 'Invitación rechazada con éxito.'
+            });
+        }
+    }
+};
 
-
-
-
-
+return (
+  <View style={{ flex: 1, backgroundColor: 'white' }}>
+      {loading ? (
+          <Loader /> // Componente de carga
+      ) : teamInvitations.length > 0 ? (
+          <FlatList
+              data={teamInvitations}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                  <TeamInvitation 
+                      inv={item}
+                      onAccept={() => handleAccept(item.id)}
+                      onDecline={() => handleDecline(item.id)}
+                  />
+              )}
+          />
+      ) : (
+          <View style={styles.noInvitationsContainer}>
+              <Text>No tienes invitaciones pendientes.</Text>
+          </View>
+      )}
+  </View>
+);
+};
 
 export default TeamInvitationScreen;
+
+const styles = StyleSheet.create({
+  noInvitationsContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+  },
+});

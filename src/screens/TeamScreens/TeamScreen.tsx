@@ -1,54 +1,85 @@
-import React, { FC, useState } from 'react';
-import { View, Text, StyleSheet,FlatList,Button,Alert } from 'react-native';
+import React, { FC, useId, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Button } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import Team from '../../components/team';
 import { StackScreenProps } from '@react-navigation/stack';
-import {TeamStackParamList} from '../../../ParamLists'
+import { TeamStackParamList } from '../../../ParamLists';
+import { Loader } from '../../components';
+import { getAllTeamsOfUser } from '../../services/team/teamMember.service';
+import { getToken } from '../../services/token.service';
+import { Teams } from '../../types/team/teams';
+import useIdStore from '../../services/useIdStore';
+type Props = StackScreenProps<TeamStackParamList, "TeamScreen">
 
-type Props = StackScreenProps<TeamStackParamList,"TeamScreen">
-
-const TeamScreen:FC<Props> = ({navigation}) => {
-
-  const [teams, setTeams] = useState([
-    { id: '1', name: 'Equipo A', description: 'Descripción del Equipo A', date: '01-01-2023',ownerId:'1' },
-    { id: '2', name: 'Equipo B', description: 'Descripción del Equipo B', date: '05-01-2023',ownerId:'4' },
-  ]);
-
-  const handleView = () => {
-    
+const TeamScreen: FC<Props> = ({ navigation }) => {
+  const [teams, setTeams] = useState<Teams[]>([]);
+  const [loading, setLoading] = useState(true);
+  const setTeamId = useIdStore(state => state.setTeamId);
+  const setCodeTeam = useIdStore(state => state.setCodeTeam);
+  const handleView = (teamId: number, codeTeam: string) => {
+    setTeamId(teamId);  
+    setCodeTeam(codeTeam);
     navigation.navigate('ViewTeamScreen');
   };
-/*
-  const deleteTeam = (teamId) => {
-    setTeams(teams.filter(team => team.id !== teamId));
-  }
 
-  const handleDelete = (teamId) => {
-    Alert.alert(
-      "Eliminar Equipo",
-      "¿Estás seguro de que quieres eliminar este equipo?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
-        { text: "Eliminar", onPress: () => deleteTeam(teamId) }
-      ]
-    );
-  };
-  */
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadTeams = async () => {
+        setLoading(true);
+        try {
+          const token = await getToken();
+          if (token) {
+            const response = await getAllTeamsOfUser(token);
+            if (!Array.isArray(response)) {
+              console.log(response);
+              return;
+            }
+            setTeams(response);
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadTeams();
+      return () => {}; 
+    }, [])
+  );
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <FlatList
-        data={teams}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <Team team={item}
-        onView={handleView}
-        />}
-        
-      />
-      <Button title="Añadir equipo" onPress={() => navigation.navigate('AddTeamScreen')} />
+      {loading ? (
+        <Loader /> 
+      ) : teams.length > 0 ? (
+        <FlatList
+          data={teams}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Team 
+              team={item}
+              onView={() => handleView(item.id, item.code)}
+            />
+          )}
+        />
+      ) : (
+        <View style={styles.noTeamsContainer}>
+          <Text>No tienes equipos asignados.</Text>
+        </View>
+      )}
+      <Button title="Crear equipo" onPress={() => navigation.navigate('AddTeamScreen')} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  noTeamsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+});
 
 export default TeamScreen;

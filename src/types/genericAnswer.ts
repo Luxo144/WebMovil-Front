@@ -1,5 +1,5 @@
 export interface ApiResponseSuccess {
-    Message: string;
+    message: string;
   }
   
   export interface ApiResponseError {
