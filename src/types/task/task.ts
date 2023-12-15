@@ -42,6 +42,7 @@ export interface FilterTask{
     responsibleId?: number;
     status?: string | null;
     myTasks?: boolean;
+    projectId?: number | null;
 }
 
 export interface AddComent{

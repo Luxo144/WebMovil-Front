@@ -11,8 +11,8 @@ import { updateMember } from '../../services/team/teamMember.service';
 
 type Props = StackScreenProps<TeamStackParamList, "EditMemberScreen">;
 
-const EditMemberScreen: FC<Props> = () => {
-    const [selectedRole, setSelectedRole] = useState("");
+const EditMemberScreen: FC<Props> = ({navigation}) => {
+    const [selectedRole, setSelectedRole] = useState("Member");
     const userId = useIdStore(state => state.userId);
     const teamId = useIdStore(state => state.teamId);
 
@@ -48,7 +48,7 @@ const EditMemberScreen: FC<Props> = () => {
               text1: 'Éxito',
               text2: 'Miembro actualizado con éxito.',
             });
-          }
+          }navigation.goBack();
       };
 
     return (

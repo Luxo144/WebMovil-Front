@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ProyStackParamList } from '../../../../ParamLists';
 import { getComments,addComment } from '../../../services/task/task.service';
@@ -7,6 +7,7 @@ import { getToken } from '../../../services/token.service';
 import useIdStore from '../../../services/useIdStore';
 import Toast from 'react-native-toast-message';
 import { Loader } from '../../../components';
+import {Button} from '../../../components';
 
 type Props = StackScreenProps<ProyStackParamList,"ViewComments">;
 

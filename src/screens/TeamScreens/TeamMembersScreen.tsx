@@ -1,4 +1,4 @@
-import React,{ FC, useEffect, useState } from 'react';
+import React,{ FC, useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, Text,FlatList } from 'react-native';
 import { Button, Loader } from '../../components';
 import TeamMember from '../../components/teamMember';
@@ -9,6 +9,7 @@ import { getToken } from '../../services/token.service';
 import { TeamMembers } from '../../types/team/teamMember';
 import useIdStore from '../../services/useIdStore';
 import Toast from 'react-native-toast-message';
+import { useFocusEffect } from '@react-navigation/native';
 type Props = StackScreenProps<TeamStackParamList,"TeamMembersScreen">
 
 
@@ -52,22 +53,27 @@ const TeamMembersScreen:FC<Props> = ({navigation}) =>{
     };
   
     
-    useEffect(() => {
-      const loadTeamMembers = async () => {
-        const token = await getToken();
-        if (token && teamId) {
-          const response = await getAllMembersTeam(teamId, token);
-          if (!Array.isArray(response)) {
-            // Manejar errores, posiblemente mostrar un mensaje
-            console.log(response);
-          } else {
-            setTeamMembers(response);
-          }
+    const loadTeamMembers = async () => {
+      setLoading(true);
+      setTeamMembers([]);
+      const token = await getToken();
+      if (token && teamId) {
+        const response = await getAllMembersTeam(teamId, token);
+        setLoading(false);
+        if (!Array.isArray(response)) {
+          // Manejar errores, posiblemente mostrar un mensaje
+          console.log(response);
+        } else {
+          setTeamMembers(response);
         }
-      };
+      }
+    };
   
-      loadTeamMembers();
-    }, [teamId]);
+    useFocusEffect(
+      useCallback(() => {
+        loadTeamMembers();
+      }, [teamId])
+    );
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
