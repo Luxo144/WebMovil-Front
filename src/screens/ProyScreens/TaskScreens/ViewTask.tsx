@@ -41,27 +41,30 @@ const ViewTask:FC<Props> = ({ navigation }) => {
         });
         return;
       }
-      if (!responsibleId) return;
       
       const TaskData = {
-        name: name|| "",
-        description: description || "",
-        responsibleId,
-        status,
-        comments:"",
-        endDate: endDate || ""
-      }
+  name: name || "",
+  description: description || "",
+  responsibleId: responsibleId ?? undefined, 
+  status,
+  comments: "",
+  endDate: endDate || ""
+};
 
       try{
         setLoading(true);
         const token = await getToken();
-        if (token&&taskId&&responsibleId){
+        console.log("token",token);
+        console.log("taskId",taskId);
+        console.log("responsibleId",responsibleId);
+        if (token&&taskId){
           const response = await updateTask(TaskData,token,taskId);
+          console.log("response",response);
           if ("error" in  response){
             throw new Error;
           }else{
             Toast.show({
-              type: 'succes',
+              type: 'success',
               text1: 'Exito',
               text2: 'Tarea actualizada con ezito'
             });
@@ -87,19 +90,24 @@ const ViewTask:FC<Props> = ({ navigation }) => {
 
     useEffect(() => {
       const fetchMembers = async () => {
-      setLoading(true);  
+        setLoading(true); 
+        console.log("projectId",projectId); 
+        console.log("taskId",taskId);
         if(projectId && taskId){
           try {
             const token = await getToken();
             if (token) { 
               const response = await getAllMembersProject(projectId, token);
-              const response2 = await getTaskById(taskId,token);
+              console.log("response",response);
+              const response2 = await getTaskById(taskId, token);
+              console.log("response",response2);
               if (Array.isArray(response)) {
                 setMembers(response);
               }
-              if ("error" in response2 ){
+              if ("error" in response2) {
                 throw new Error;
-              }else{
+              } else {
+                console.log("response2",response2);
                 setName(response2.name);
                 setDescription(response2.description);
                 setResponsibleId(response2.responsibleId);
@@ -107,11 +115,11 @@ const ViewTask:FC<Props> = ({ navigation }) => {
                 setCreatedBy(response2.nameCreatedBy);
                 setStartDate(response2.startDate);
                 setEndDate(response2.endDate);
-                setCreatedAt(response2.createdAt);
-                setUpdatedAt(response2.updatedAt);
+                setCreatedAt(response2.createdAt.split('T')[0]);
+                setUpdatedAt(response2.updatedAt.split('T')[0]);
               }         
             } else {
-                console.error("Token is null.");
+              console.error("Token is null.");
             }
           } catch (error) {
             console.error('Error al cargar la pagina', error);
@@ -119,9 +127,10 @@ const ViewTask:FC<Props> = ({ navigation }) => {
         }
         setLoading(false); 
       };
-  
+    
       fetchMembers();
     }, [projectId]);
+    
 
   return (
     <ScrollView style={styles.container}>
@@ -214,7 +223,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         backgroundColor: '#fff',
       },
-    // ...otros estilos...
   });
 
 export default ViewTask;

@@ -13,7 +13,7 @@ interface TaskData{
 
 interface TaskProps {
     task: TaskData;
-    onView: () => void;
+    onView: (invId: number) => void;
     onDelete: (invId: number) => void;
 }
 
@@ -28,7 +28,7 @@ const Task:React.FC<TaskProps> = ({ task, onView, onDelete }) => {
       <Text>Fecha de Creación: {task.createdAt.split('T')[0]}</Text>
       <Text>Estado: {task.status}</Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={() => onView()}>
+        <TouchableOpacity onPress={() => onView(task.id)}>
           <Icon name="visibility" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onDelete(task.id)} >

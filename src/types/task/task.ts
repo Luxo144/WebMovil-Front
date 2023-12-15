@@ -9,11 +9,11 @@ export interface CreateTaskRequest{
 export interface UpdateTaskRequest{
 
     name: string;
-    description: string;
-    responsibleId: number;
+    description?: string;
+    responsibleId?: number;
     status: string;
-    comments: string;
-    endDate: string;
+    comments?: string;
+    endDate?: string;
 }
 export interface DeleteTask{
     idTask: number;
@@ -40,7 +40,7 @@ export interface FilterTask{
     userId: number;
     name?: string;
     responsibleId?: number;
-    status?: string; 
+    status?: string | null;
     myTasks?: boolean;
 }
 

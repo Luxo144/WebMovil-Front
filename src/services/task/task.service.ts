@@ -108,7 +108,7 @@ export const getTasks = async (queryParams: Omit<FilterTask, 'userId'>, token: s
     Object.keys(queryParams).forEach(key => {
         const queryKey = key as keyof typeof queryParams;
         const queryValue = queryParams[queryKey];
-        if (queryValue !== undefined) {
+        if (queryValue !== undefined && queryValue !== null) {
             url.searchParams.append(queryKey, queryValue.toString());
         }
     });

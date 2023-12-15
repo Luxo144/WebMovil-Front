@@ -1,4 +1,4 @@
-import React, { useState, FC, useEffect } from 'react';
+import React, { useState, FC, useEffect, useRef } from 'react';
 import { View, FlatList, Switch,StyleSheet ,Text, TextInput} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Task from '../../../components/task'; 
@@ -11,6 +11,8 @@ import { deleteTask, getAllTasks, getTasks } from '../../../services/task/task.s
 import { getToken } from '../../../services/token.service';
 import { GetTask} from '../../../types/task/task'
 import Toast from 'react-native-toast-message';
+import { Picker } from '@react-native-picker/picker';
+import { Keyboard } from 'react-native';
 
 type Props = StackScreenProps<ProyStackParamList,"TaskScreen">;
 
@@ -25,14 +27,14 @@ const TasksScreen:FC<Props> = ({navigation}) => {
   const [loading,setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [filterMyTasks, setFilterMyTasks] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const toggleSwitch = () => {
     setIsSwitchEnabled(previousState => !previousState);
-    fetchFilteredTasks();
   };
-
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);  const [searchTimeout, setSearchTimeout] = useState(null);
   useEffect(() => {
     fetchFilteredTasks();
-  }, [projectId]);
+  }, [selectedStatus, search, isSwitchEnabled, projectId]);
 
   
   const loadTasks = async () => {
@@ -42,7 +44,6 @@ const TasksScreen:FC<Props> = ({navigation}) => {
       setTasks([]);
       if (token && projectId) {
         const response = await getAllTasks(projectId, token);
-        console.log("task",response);
         if ("error" in response) {
           throw new Error;
         }
@@ -64,14 +65,17 @@ const TasksScreen:FC<Props> = ({navigation}) => {
 
   const handleAdd = () =>{
     
-    console.log("selectedTaskId",selectedTaskId);
     navigation.navigate("AddTask");
     
   }
-  const handleViewTask = () => {
+  const handleViewTask = (taskId:number) => {
+    setTaskId(taskId);
     navigation.navigate("ViewTask");
   };
 
+  const handleStatusChange = (itemValue: string | null) => {
+    setSelectedStatus(itemValue);
+  };
   
   const handleDeletePress = (taskId:number) => {
     setSelectedTaskId(taskId);
@@ -81,25 +85,33 @@ const TasksScreen:FC<Props> = ({navigation}) => {
   const fetchFilteredTasks = async () => {
     setLoading(true);
     const token = await getToken();
-    if (token && projectId) {
-      const queryParams = {
-        projectId: projectId,
-        name: search,
-        myTasks: isSwitchEnabled,
-      };
-      const tasksResponse = await getTasks(queryParams, token);
-      if (!('error' in tasksResponse)) {
-        setTasks(tasksResponse);
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'No se pudo cargar las tareas'
-        });
-      }
+    if (!token) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error de Autenticación',
+        text2: 'No se pudo obtener el token de usuario.'
+      });
+      setLoading(false);
+      return;
+    }
+    console.log("selected",selectedStatus);
+
+    const queryParams = {
+      projectId: projectId,
+      name: search, 
+      myTasks: isSwitchEnabled,
+      status: selectedStatus,
+    };
+
+    console.log(queryParams);
+    const tasksResponse = await getTasks(queryParams, token);
+    if (!('error' in tasksResponse)) {
+      setTasks(tasksResponse);
+    } else {
+      // Manejo de error
     }
     setLoading(false);
-  };
+  }
 
   const handleDeleteConfirm = async () => {
     setModalVisible(false);
@@ -115,7 +127,6 @@ const TasksScreen:FC<Props> = ({navigation}) => {
         setLoading(false);
         return;
     }
-    console.log("selectedTaskId",selectedTaskId);
 
     if (!selectedTaskId) {
         Toast.show({
@@ -129,7 +140,6 @@ const TasksScreen:FC<Props> = ({navigation}) => {
 
     const taskData = { idTask: selectedTaskId }; // Asegúrate de que esta estructura coincida con lo que espera tu API
     const response = await deleteTask(taskData, token);
-    console.log(response);
     if ('error' in response) {
         Toast.show({
             type: 'error',
@@ -147,6 +157,27 @@ const TasksScreen:FC<Props> = ({navigation}) => {
     setLoading(false);
 };
 
+const handleSearchChange = (text: string) => {
+  setSearch(text);
+  if (text === '' && text!==search) {
+    fetchFilteredTasks();
+  }
+  if (searchTimeoutRef.current) {
+    clearTimeout(searchTimeoutRef.current);
+  }
+  searchTimeoutRef.current = setTimeout(() => {
+    fetchFilteredTasks();
+  }, 500);
+};
+
+const handleClearSearch = () => {
+  setSearch(''); 
+  if (searchTimeoutRef.current) {
+    clearTimeout(searchTimeoutRef.current);
+  }
+  fetchFilteredTasks(); 
+};
+
 
 return (
   <View style={{ flex: 1 }}>
@@ -154,8 +185,21 @@ return (
         style={styles.searchInput}
         placeholder="Buscar tarea"
         value={search}
-        onChangeText={(text) => { setSearch(text); fetchFilteredTasks(); }}
+        onChangeText={handleSearchChange}
       />  
+      
+     <Picker
+        selectedValue={selectedStatus}
+        onValueChange={handleStatusChange}
+        style={styles.picker}
+      >
+        <Picker.Item label="Todos los estados" value = {null} />
+        <Picker.Item label="Por Hacer" value="Por Hacer" />
+        <Picker.Item label="En curso" value="En curso" />
+        <Picker.Item label="Realizada" value="Realizada" />
+      </Picker>
+
+
     <View style={styles.switchContainer}>
         <Text>Filtrar mis tareas</Text>
         <Switch
@@ -212,6 +256,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
   },
 });
 export default TasksScreen;
