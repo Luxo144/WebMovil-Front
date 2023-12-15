@@ -2,7 +2,7 @@
 export interface CreateTaskRequest{
     name: string;
     description: string;
-    responsibleId: number;
+    responsibleId: number|null;
     projectId: number;
 }
 

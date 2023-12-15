@@ -1,73 +1,71 @@
 import React, { useState, FC } from 'react';
 import { View, FlatList, Switch,StyleSheet ,Text} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import Task from '../../../components/task'; 
 import { Loader,Button } from '../../../components';
 import { ProyStackParamList } from '../../../../ParamLists';
 import { StackScreenProps } from '@react-navigation/stack';
 import ConfirmationModal from '../../../components/confirmationModal';
-
+import useIdStore from '../../../services/useIdStore';
+import { getAllTasks } from '../../../services/task/task.service';
+import { getToken } from '../../../services/token.service';
+import { GetTask} from '../../../types/task/task'
 
 type Props = StackScreenProps<ProyStackParamList,"TaskScreen">;
-const tasksData = [
-    {
-      id: 1,
-      name: 'Diseñar Interfaz de Usuario',
-      createdBy: 'Ana García',
-      creationDate: '2022-09-01',
-      status: 'Por hacer'
-    },
-    {
-      id: 2,
-      name: 'Implementar Autenticación',
-      createdBy: 'Luis Pérez',
-      creationDate: '2022-09-05',
-      status: 'En curso'
-    },
-    {
-      id: 3,
-      name: 'Revisar Documentación del Proyecto',
-      createdBy: 'Marta Sánchez',
-      creationDate: '2022-09-10',
-      status: 'Realizada'
-    },
-    {
-      id: 4,
-      name: 'Desarrollar Componente de Notificaciones',
-      createdBy: 'Carlos López',
-      creationDate: '2022-09-15',
-      status: 'Por hacer'
-    },
-    {
-      id: 5,
-      name: 'Testear la Aplicación Móvil',
-      createdBy: 'Sofía Martín',
-      creationDate: '2022-09-20',
-      status: 'En curso'
-    }
-  ];
-  
+
 
 const TasksScreen:FC<Props> = ({navigation}) => {
-  const [tasks, setTasks] = useState(tasksData);
+  const [tasks, setTasks] = useState<GetTask[]>();
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const toggleSwitch = () => setIsSwitchEnabled(previousState => !previousState);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const setTaskId = useIdStore(state =>state.setTaskId);
+  const projectId = useIdStore(state => state.projectId);
+  const [loading,setLoading] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadTasks = async () => {
+        try {
+          setLoading(true);
+          const token = await getToken();
+          if(token && projectId){
+            const response = await getAllTasks(projectId,token);
+            if("error" in response){
+              throw new Error;
+            }
+            setTasks(response);
+          }
+        } catch (error) {
+          
+        }finally{
+          setLoading(false);
+        }
+      };
+
+      loadTasks();
+    }, [])
+  );
 
   const handleAdd = () =>{
-    
+    if(selectedTaskId){
+      setTaskId(selectedTaskId);
+    navigation.navigate("AddTask");
+    }
   }
   const handleViewTask = () => {
     navigation.navigate("ViewTask");
   };
 
+  
   const handleDeletePress = (taskId:number) => {
-    setSelectedTaskId(taskId);
+
     setModalVisible(true);
+    
   };
 
   const handleDeleteConfirm = () => {
-    setTasks(tasks.filter(task => task.id !== selectedTaskId));
     setModalVisible(false);
   };
 

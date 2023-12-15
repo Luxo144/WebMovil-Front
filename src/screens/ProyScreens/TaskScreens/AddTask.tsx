@@ -1,28 +1,99 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, ScrollView, Text } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ProyStackParamList } from '../../../../ParamLists';
+import { Picker } from '@react-native-picker/picker';
+import { getAllMembersProject } from '../../../services/project/project.service';
+import useIdStore from '../../../services/useIdStore';
+import { getToken } from '../../../services/token.service';
+import { UserProject } from '../../../types/project/project';
+import { Loader } from '../../../components';
+import { createTask } from '../../../services/task/task.service';
+import Toast from 'react-native-toast-message';
 
 type Props = StackScreenProps<ProyStackParamList,"AddTask">;
 
 const AddStack: FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [responsibleId, setResponsibleId] = useState('');
-  const [projectId, setProjectId] = useState('');
+  const [responsibleId, setResponsibleId] = useState<number|null>(null);
+  const projectId = useIdStore(state => state.projectId);
+  const [members, setMembers] = useState<UserProject[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleCreateTask = () => {
-    // Lógica para crear la tarea
-    // Por ejemplo, enviar estos datos a tu backend
-    const taskData = {
-      name,
-      description,
-      responsibleId: parseInt(responsibleId, 10), // Convertir a número
-      projectId: parseInt(projectId, 10), // Convertir a número
+  useEffect(() => {
+    const fetchMembers = async () => {
+    setLoading(true);  
+      if(projectId){
+        try {
+          const token = await getToken();
+          if (token) { 
+            const response = await getAllMembersProject(projectId, token);
+            if (Array.isArray(response)) {
+              setMembers(response);
+            } else {
+              
+              console.error(response);
+            }            
+          } else {
+              console.error("Token is null.");
+          }
+        } catch (error) {
+          console.error('Error al obtener los miembros:', error);
+        }
+      }
+      setLoading(false); 
     };
 
-    console.log(taskData);
-    // Aquí iría el código para comunicarse con el backend
+    fetchMembers();
+  }, [projectId]);
+
+  const handleCreateTask = async () => {
+    if(!name){
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Ingrese un nombre a la tarea'
+      });
+      return;
+    }
+    if (!projectId) return;
+
+    const TaskData = {
+      name,
+      description,
+      responsibleId: responsibleId, // Convertir a número
+      projectId: projectId // Convertir a número
+    };
+
+    try{
+      setLoading(true);
+      const token = await getToken();
+      if (token) {
+        const response = await createTask(TaskData, token);
+        if("error" in response){
+          throw new Error;
+        }
+        Toast.show({
+          type: 'success',
+          text1: 'Exito',
+          text2: 'Tarea creada exitosamente'
+        });
+        navigation.goBack();        
+      } else {
+          console.error("Token is null.");
+      }
+    }catch(error){
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Ocurrio un error al crear la tarea'
+      });
+    }finally{
+      setLoading(false);
+    }
+
+    
   };
 
   return (
@@ -41,28 +112,22 @@ const AddStack: FC<Props> = ({ navigation }) => {
         value={description}
         onChangeText={setDescription}
         placeholder="Descripción"
-        multiline
+        
       />
-
-      <Text style={styles.label}>ID del Encargado:</Text>
-      <TextInput
-        style={styles.input}
-        value={responsibleId}
-        onChangeText={setResponsibleId}
-        placeholder="ID del Encargado"
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>ID del Proyecto:</Text>
-      <TextInput
-        style={styles.input}
-        value={projectId}
-        onChangeText={setProjectId}
-        placeholder="ID del Proyecto"
-        keyboardType="numeric"
-      />
+      <Text style={styles.label}>Encargado:</Text>
+     <Picker
+      selectedValue={responsibleId}
+      onValueChange={(itemValue, itemIndex) => setResponsibleId(itemValue)}
+      style={styles.picker}
+      >
+      <Picker.Item label="Seleccione un responsable" value={null} />
+      {members.map((member) => (
+        <Picker.Item key={member.id} label={member.firstName} value={member.id} />
+      ))}
+      </Picker>
 
       <Button title="Crear Tarea" onPress={handleCreateTask} />
+      {loading && <Loader />}
     </ScrollView>
   );
 };
@@ -84,6 +149,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
+  picker: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+
 });
 
 export default AddStack;
