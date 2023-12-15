@@ -16,10 +16,11 @@ const ChangePassScreen: FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const isValidPassword = (password: string) => {
-    // Ejemplo: Validar que la contraseña tenga al menos 6 caracteres
+
     return password.length >= 6;
   };
 
+  
   const handlePasswordReset = async () => {
 
     if (newPassword !== confirmPassword) {

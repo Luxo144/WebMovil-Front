@@ -1,5 +1,5 @@
-import React, { useState, FC } from 'react';
-import { View, FlatList, Switch,StyleSheet ,Text} from 'react-native';
+import React, { useState, FC, useEffect } from 'react';
+import { View, FlatList, Switch,StyleSheet ,Text, TextInput} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Task from '../../../components/task'; 
 import { Loader,Button } from '../../../components';
@@ -7,7 +7,7 @@ import { ProyStackParamList } from '../../../../ParamLists';
 import { StackScreenProps } from '@react-navigation/stack';
 import ConfirmationModal from '../../../components/confirmationModal';
 import useIdStore from '../../../services/useIdStore';
-import { deleteTask, getAllTasks } from '../../../services/task/task.service';
+import { deleteTask, getAllTasks, getTasks } from '../../../services/task/task.service';
 import { getToken } from '../../../services/token.service';
 import { GetTask} from '../../../types/task/task'
 import Toast from 'react-native-toast-message';
@@ -18,13 +18,23 @@ type Props = StackScreenProps<ProyStackParamList,"TaskScreen">;
 const TasksScreen:FC<Props> = ({navigation}) => {
   const [tasks, setTasks] = useState<GetTask[]>();
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
-  const toggleSwitch = () => setIsSwitchEnabled(previousState => !previousState);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const setTaskId = useIdStore(state =>state.setTaskId);
   const projectId = useIdStore(state => state.projectId);
   const [loading,setLoading] = useState(false);
+  const [search, setSearch] = useState('');
+  const [filterMyTasks, setFilterMyTasks] = useState(false);
+  const toggleSwitch = () => {
+    setIsSwitchEnabled(previousState => !previousState);
+    fetchFilteredTasks();
+  };
 
+  useEffect(() => {
+    fetchFilteredTasks();
+  }, [projectId]);
+
+  
   const loadTasks = async () => {
     try {
       setLoading(true);
@@ -66,6 +76,29 @@ const TasksScreen:FC<Props> = ({navigation}) => {
   const handleDeletePress = (taskId:number) => {
     setSelectedTaskId(taskId);
     setModalVisible(true);
+  };
+
+  const fetchFilteredTasks = async () => {
+    setLoading(true);
+    const token = await getToken();
+    if (token && projectId) {
+      const queryParams = {
+        projectId: projectId,
+        name: search,
+        myTasks: isSwitchEnabled,
+      };
+      const tasksResponse = await getTasks(queryParams, token);
+      if (!('error' in tasksResponse)) {
+        setTasks(tasksResponse);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'No se pudo cargar las tareas'
+        });
+      }
+    }
+    setLoading(false);
   };
 
   const handleDeleteConfirm = async () => {
@@ -117,15 +150,22 @@ const TasksScreen:FC<Props> = ({navigation}) => {
 
 return (
   <View style={{ flex: 1 }}>
+    <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar tarea"
+        value={search}
+        onChangeText={(text) => { setSearch(text); fetchFilteredTasks(); }}
+      />  
     <View style={styles.switchContainer}>
-      <Text>{isSwitchEnabled ? 'Mis Tareas' : 'Todas las tareas'}</Text>
-      <Switch
-        onValueChange={toggleSwitch}
-        value={isSwitchEnabled}
-      />
-    </View>
+        <Text>Filtrar mis tareas</Text>
+        <Switch
+          onValueChange={toggleSwitch}
+          value={isSwitchEnabled}
+        />
+      </View>
 
-    {tasks && tasks.length > 0 ? (
+    {loading ? <Loader /> : (
+      tasks && tasks.length > 0 ? (
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id.toString()}
@@ -138,7 +178,8 @@ return (
         )}
       />
     ) : (
-      <Text style={styles.noTasksText}>No hay tareas en el equipo.</Text>
+      <Text style={styles.noTasksText}>No hay tareas en el proyecto.</Text>
+    )
     )}
 
     <Button title='Agregar tarea' onPress={handleAdd}/>
@@ -153,6 +194,13 @@ return (
     };
 // Agrega el siguiente estilo en tu objeto de estilos
 const styles = StyleSheet.create({
+  searchInput: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    margin: 10,
+  },
   switchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -165,7 +213,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
   },
-
 });
-
 export default TasksScreen;

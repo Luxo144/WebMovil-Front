@@ -12,6 +12,7 @@ const BASE_URL = `${API_URL}/project-invitations`;
 
 //crear una invitacion 
 export const createInvitation = async (invitationData: CreateInvitationProject, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
+    
     const response = await fetch(`${BASE_URL}/create-invitation`, {
         method: 'POST',
         headers: {

@@ -7,11 +7,14 @@ import Toast from 'react-native-toast-message';
 import { getToken } from '../../services/token.service';
 import { deleteTeam } from '../../services/team/team.service';
 import useIdStore from '../../services/useIdStore';
+import ConfirmationModal from '../../components/confirmationModal';
+import { Loader } from '../../components';
 type Props = StackScreenProps<TeamStackParamList,"ViewTeamScreen">
 
 
 const ViewTeamScreen:FC<Props> = ({route, navigation}) => {
     const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const handleEditTeam = () => {
         // Navegación a la pantalla de edición del equipo
         navigation.navigate('EditTeamScreen');
@@ -26,45 +29,48 @@ const ViewTeamScreen:FC<Props> = ({route, navigation}) => {
         navigation.navigate('ProyInvitationScreen');
     }
 
-    const handleDeleteTeam = () => {
+    const handleDeleteConfirm = async () => {
+        setModalVisible(false); 
+        setLoading(true);
         const teamId = useIdStore.getState().teamId;
-        console.log(teamId);
-        Alert.alert(
-            "Eliminar Equipo",
-            "¿Estás seguro de que quieres eliminar el equipo?",
-            [
-                {
-                    text: "Cancelar",
-                    style: "cancel"
-                },
-                {
-                    text: "Eliminar",
-                    onPress: async () => {
-                        setLoading(true);
-                        const token = await getToken(); // Asegúrate de obtener el token
-                        if (token && teamId) {
-                            const response = await deleteTeam(teamId, token);
-                            console.log(response);
-                            if ('error' in response) {
-                                Toast.show({
-                                    type: 'error',
-                                    text1: 'Error',
-                                    text2: response.error.message
-                                });
-                            } else {
-                                Toast.show({
-                                    type: 'success',
-                                    text1: 'Éxito',
-                                    text2: response.message
-                                });
-                                navigation.navigate('TeamScreen');
-                            }
-                        }
-                        setLoading(false);
-                    }
-                }
-            ]
-        );
+        if (!teamId) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'No se pudo obtener el ID del equipo.'
+            });
+            return;
+        }
+        setLoading(true);
+        const token = await getToken();
+        if (token) {
+            const response = await deleteTeam(teamId, token);
+            if ('error' in response) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error',
+                    text2: response.error.message
+                });
+            } else {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Éxito',
+                    text2: 'Equipo eliminado con éxito.'
+                });
+                navigation.navigate('TeamScreen');
+            }
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Error de Autenticación',
+                text2: 'No se pudo obtener el token de usuario.'
+            });
+        }
+        setLoading(false);
+    };
+
+    const handleDeleteTeam = () => {
+        setModalVisible(true);
     };
 
 
@@ -83,12 +89,18 @@ const ViewTeamScreen:FC<Props> = ({route, navigation}) => {
                 title="Ver Miembros del Equipo"
                 onPress={() => handleViewMembers()}
             />
-
             <Button
                 title="Eliminar Equipo"
                 onPress={handleDeleteTeam}
                 style={styles.deleteButton}
             />
+            <ConfirmationModal
+                visible={modalVisible}
+                onConfirm={handleDeleteConfirm}
+                onCancel={() => setModalVisible(false)}
+                type='equipo'
+            />
+            {loading && <Loader />}
         </View>
     );
 };

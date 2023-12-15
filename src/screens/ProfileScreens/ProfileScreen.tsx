@@ -11,36 +11,41 @@ import AuthContext from '../../navigation/AuthContext';
 import { logout } from '../../services/auth/auth.services';
 import Toast from 'react-native-toast-message';
 import useIdStore from '../../services/useIdStore';
-
+import {UserDataResponse} from '../../types/auth/user';
 type Props = StackScreenProps<ProfileStackParamList,"ProfileScreen">
 
 const ProfileScreen:FC<Props> = () =>{
     const clearIds = useIdStore(state => state.clearIds);
-    const [userDetails, setUserDetails] = useState<any | null>(null);
+    const [userDetails, setUserDetails] = useState<UserDataResponse | null>(null);
     const [loading,setLoading] = useState(true);
     const isFocused = useIsFocused();
     const { setUser } = useContext(AuthContext);
 
     useEffect(() => {
-      if(isFocused) {
+      if (isFocused) {
         const fetchData = async () => {
-            try {
-                const token = await getToken(); // Asegúrate de esperar la promesa aquí.
-                console.log("Token: ", token)
-                if (token) { // Verifica que el token no sea null antes de proceder.
-                    const details = await getUserData(token);
-                    console.log("Details: ", details)
-                    setUserDetails(details);
-                } else {
-                    console.error("Token is null.");
-                }
-            } catch (error) {
-                console.error("Error fetching user details:", error);
-            } finally{
-              setLoading(false);
+          try {
+            setLoading(true);
+            const token = await getToken();
+            if (token) {
+              const response = await getUserData(token);
+              if ('error' in response) {
+                // Manejo del error
+                console.error("Error fetching user details:", response.error);
+              } else {
+                // Asegúrate de que la respuesta es del tipo UserDetails
+                setUserDetails(response as UserDataResponse);
+              }
+            } else {
+              console.error("Token is null.");
             }
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+          } finally {
+            setLoading(false);
+          }
         };
-        fetchData(); // Invoca la función fetchData.
+        fetchData();
       }
     }, [isFocused]);
     

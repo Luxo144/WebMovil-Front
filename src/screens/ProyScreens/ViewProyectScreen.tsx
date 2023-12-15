@@ -35,54 +35,38 @@ const ViewProyectScreen: FC<Props> = ({navigation})=>{
     }
 
     const handleDeleteProyect = () => {
-        // Usa el idProject aquí dentro del callback de onPress
-        Alert.alert(
-            "Eliminar Proyecto",
-            "¿Estás seguro de que quieres eliminar el proyecto?",
-            [
-                {
-                    text: "Cancelar",
-                    style: "cancel"
-                },
-                {
-                    text: "Eliminar",
-                    onPress: async () => {
-                        setLoading(true);
-                        const token = await getToken();
-                        if (token && idProject) {
-                            const response = await deleteProject({ idProject: idProject }, token);
-                            setLoading(false);
-                            if ('error' in response) {
-                                Toast.show({
-                                    type: 'error',
-                                    text1: 'Error',
-                                    text2: response.error.message || 'No se pudo eliminar el proyecto.'
-                                });
-                            } else {
-                                Toast.show({
-                                    type: 'success',
-                                    text1: 'Éxito',
-                                    text2: 'Proyecto eliminado con éxito.'
-                                });
-                                navigation.goBack();
-                            }
-                        } else {
-                            setLoading(false);
-                            Toast.show({
-                                type: 'error',
-                                text1: 'Error de Autenticación',
-                                text2: 'No se pudo obtener el token de usuario.'
-                            });
-                        }
-                    }
-                }
-            ],
-            { cancelable: false }
-        );
-    };
-
-    const handleDeleteConfirm = () => {
+        setModalVisible(true);
+      };
+    
+      const handleDeleteConfirm = async () => {
         setModalVisible(false);
+        setLoading(true);
+        const token = await getToken();
+        if (token && idProject) {
+          const response = await deleteProject({ idProject: idProject }, token);
+          setLoading(false);
+          if ('error' in response) {
+            Toast.show({
+              type: 'error',
+              text1: 'Error',
+              text2: response.error.message || 'No se pudo eliminar el proyecto.'
+            });
+          } else {
+            Toast.show({
+              type: 'success',
+              text1: 'Éxito',
+              text2: 'Proyecto eliminado con éxito.'
+            });
+            navigation.goBack(); // O redirige a la pantalla de proyectos
+          }
+        } else {
+          setLoading(false);
+          Toast.show({
+            type: 'error',
+            text1: 'Error de Autenticación',
+            text2: 'No se pudo obtener el token de usuario.'
+          });
+        }
       };
 
 
@@ -107,10 +91,8 @@ const ViewProyectScreen: FC<Props> = ({navigation})=>{
                 onPress={handleTeamInv}
             />
             
-            <Button
-                title="Eliminar Proyecto"
-                onPress={handleDeleteProyect}
-                style={styles.deleteButton}/>
+            <Button title="Eliminar Proyecto" onPress={handleDeleteProyect} style={styles.deleteButton} />
+      
             <ConfirmationModal
                 visible={modalVisible}
                 onConfirm={handleDeleteConfirm}

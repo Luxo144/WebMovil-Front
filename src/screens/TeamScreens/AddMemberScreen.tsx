@@ -66,6 +66,7 @@ const AddMemberScreen: FC<Props> = ({ navigation }) => {
         placeholder="Correo del integrante"
         style={styles.input}
       />
+      <Button title="Enviar invitación" onPress={handleAdd} />
     </View>
   );
 };

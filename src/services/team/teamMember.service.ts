@@ -47,7 +47,7 @@ export const getAllMembersTeam = async (teamId: number, token: string): Promise<
 //actualizar un miembro de un equipo rol
 export const updateMember = async (memberData: UpdateMemberRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/update-member`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

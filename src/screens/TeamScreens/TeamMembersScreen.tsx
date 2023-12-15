@@ -17,9 +17,11 @@ const TeamMembersScreen:FC<Props> = ({navigation}) =>{
   const [teamMembers, setTeamMembers] = useState<TeamMembers[]>([]);
   const teamId = useIdStore(state => state.teamId);
   const [loading, setLoading] = useState(false);
+  const setUserId = useIdStore(state => state.setUserId);
     const handleEdit = (memberId: number) => {
+      console.log("memberId",memberId);
+      setUserId(memberId)
       navigation.navigate("EditMemberScreen");
-
     }
     const handleDelete = async (memberId: number) => {
       setLoading(true);
