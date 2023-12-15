@@ -1,6 +1,5 @@
 import React, {FC, useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import {TeamStackParamList} from '../../../ParamLists'
 import useIdStore from '../../services/useIdStore';
@@ -13,7 +12,6 @@ type Props = StackScreenProps<TeamStackParamList, "AddMemberScreen">;
 
 const AddMemberScreen: FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('Member');
   const [loading, setLoading] = useState(false);
   const teamId = useIdStore(state => state.teamId);
   const isValidEmail = (email: string) => {
@@ -68,15 +66,6 @@ const AddMemberScreen: FC<Props> = ({ navigation }) => {
         placeholder="Correo del integrante"
         style={styles.input}
       />
-      <Picker
-        selectedValue={role}
-        style={{ height: 50, width: 150 }}
-        onValueChange={(itemValue) => setRole(itemValue)}
-      >
-        <Picker.Item label="Member" value="Member" />
-        <Picker.Item label="Developer" value="Developer" />
-      </Picker>
-      <Button title="Añadir Integrante" onPress={handleAdd} />
     </View>
   );
 };

@@ -18,7 +18,8 @@ const TeamMembersScreen:FC<Props> = ({navigation}) =>{
   const teamId = useIdStore(state => state.teamId);
   const [loading, setLoading] = useState(false);
     const handleEdit = (memberId: number) => {
-      
+      navigation.navigate("EditMemberScreen");
+
     }
     const handleDelete = async (memberId: number) => {
       setLoading(true);

@@ -25,7 +25,7 @@ const Task:React.FC<TaskProps> = ({ task, onView, onDelete }) => {
     <View style={[styles.taskContainer, { backgroundColor }]}>
       <Text style={styles.taskName}>{task.name}</Text>
       <Text>Creado por: {task.nameCreatedBy}</Text>
-      <Text>Fecha de Creación: {task.createdAt}</Text>
+      <Text>Fecha de Creación: {task.createdAt.split('T')[0]}</Text>
       <Text>Estado: {task.status}</Text>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity onPress={() => onView()}>

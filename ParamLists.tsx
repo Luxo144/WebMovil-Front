@@ -21,6 +21,8 @@ export type TeamStackParamList = {
     ProyMembersScreen: undefined;
     EditProyScreen: undefined;
     AddMemberScreen: undefined;
+    EditMemberScreen: undefined;
+    
 }
 
 export type ProyStackParamList = {
@@ -32,5 +34,6 @@ export type ProyStackParamList = {
     TaskScreen:undefined;
     ViewTask:undefined;
     AddTask:undefined;
+    InvTeamScreen: undefined;
 
 }

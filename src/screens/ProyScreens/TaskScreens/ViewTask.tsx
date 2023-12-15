@@ -12,7 +12,6 @@ const ViewTask:FC<Props> = ({ navigation }) => {
     const [description, setDescription] = useState("");
     const [responsible, setResponsible] = useState("");
     const [status, setStatus] = useState("Por Hacer");
-    const [comments, setComments] = useState("");
   
     // Tus hooks no editables...
     const [createdBy] = useState("Nombre del creador");
@@ -35,7 +34,10 @@ const ViewTask:FC<Props> = ({ navigation }) => {
       ];
 
     const handleSave = () =>{
-
+      navigation.goBack();
+    }
+    const viewComments = () =>{
+      //navigation.navigate("ViewComments");
     }
 
   return (
@@ -52,12 +54,7 @@ const ViewTask:FC<Props> = ({ navigation }) => {
             value={description}
             placeholder="Descripcion"
         />
-        <TextInput
-            style={styles.input}
-            onChangeText={setComments}
-            value={comments}
-            placeholder="Comentarios"
-        />
+        <Button title='Ver comentarios' onPress={viewComments}></Button>
         <RNPickerSelect
             onValueChange={(value) => setResponsible(value)}
             items={responsibleOptions}

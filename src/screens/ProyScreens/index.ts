@@ -6,5 +6,6 @@ import ViewProyectScreen from "./ViewProyectScreen";
 import TasksScreen from "./TaskScreens/TaskScreen";
 import ViewTask from "./TaskScreens/ViewTask";
 import AddTask from "./TaskScreens/AddTask"
+import InvTeamScreen from "./InvTeamScreen";
 
-export {AddProyScreen,EditProyScreen,ProyMembersScreen,ProyectsScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask}
+export {AddProyScreen,EditProyScreen,ProyMembersScreen,ProyectsScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask,InvTeamScreen}

@@ -30,6 +30,9 @@ const ViewProyectScreen: FC<Props> = ({navigation})=>{
         // Navegación a la pantalla para ver miembros del proyecto
         navigation.navigate('TaskScreen');
     };
+    const handleTeamInv = () =>{
+        navigation.navigate('InvTeamScreen');
+    }
 
     const handleDeleteProyect = () => {
         // Usa el idProject aquí dentro del callback de onPress
@@ -98,6 +101,10 @@ const ViewProyectScreen: FC<Props> = ({navigation})=>{
             <Button
                 title="Ver Tareas"
                 onPress={handleViewTasks}
+            />
+            <Button
+                title="Invitar equipo"
+                onPress={handleTeamInv}
             />
             
             <Button

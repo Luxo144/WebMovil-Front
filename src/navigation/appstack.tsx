@@ -7,8 +7,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 //screens
 import {ProfileScreen,EditProfileScreen} from "../screens/ProfileScreens";
 import {AddTeamScreen,EditTeamScreen,ViewTeamScreen,ProyInvitationScreen,
-TeamMembersScreen,AddMemberScreen,TeamInvitationScreen,TeamScreen} from "../screens/TeamScreens";
-import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask} from "../screens/ProyScreens";
+TeamMembersScreen,AddMemberScreen,TeamInvitationScreen,TeamScreen,EditMemberScreen} from "../screens/TeamScreens";
+import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask,InvTeamScreen} from "../screens/ProyScreens";
 
 
 
@@ -167,6 +167,12 @@ const TeamStackScreen:FC = () =>{
                 options={{
                 title: 'Añadir miembro',
             }}/>
+            <TeamStack.Screen
+                name="EditMemberScreen"
+                component={EditMemberScreen}
+                options={{
+                title: 'Añadir miembro',
+            }}/>
             
 
         </TeamStack.Navigator>
@@ -223,6 +229,12 @@ const ProyStackScreen:FC = () =>{
             <ProyStack.Screen
                 name="AddTask"
                 component={AddTask}
+                options={{
+                title: 'Crear tarea',
+            }}/>
+            <ProyStack.Screen
+                name="InvTeamScreen"
+                component={InvTeamScreen}
                 options={{
                 title: 'Crear tarea',
             }}/>
