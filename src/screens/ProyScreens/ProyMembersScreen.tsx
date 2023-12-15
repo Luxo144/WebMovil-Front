@@ -8,7 +8,7 @@ import Toast from 'react-native-toast-message';
 import useIdStore from '../../services/useIdStore';
 import { getToken } from '../../services/token.service';
 import { UserProject } from '../../types/project/project';
-import { getTeamsOfProject } from '../../services/project/projectTeam.service';
+import { getTeamsOfProject, removeTeamFromProject } from '../../services/project/projectTeam.service';
 import { TeamsOfProject } from '../../types/project/projectTeam';
 
 type Props = StackScreenProps<ProyStackParamList, "ProyMembersScreen">;
@@ -42,9 +42,39 @@ const ProyMembersScreen: FC<Props> = ({ navigation }) => {
         fetchMembers();
     }, [projectId]);
 
-    const handleDelete = async (userId: number) => {
-        // Implementar lógica de eliminación aquí
-    };
+    const handleDelete = async (teamId: number) => {
+      setLoading(true); // Activa el indicador de carga
+      const token = await getToken();
+      if (token && projectId) {
+          
+          const projectTeamData = { idTeam: teamId, idProject: projectId }; 
+          const response = await removeTeamFromProject(projectTeamData, token);
+          console.log(response);
+          if ('error' in response) {
+              Toast.show({
+                  type: 'error',
+                  text1: 'Error',
+                  text2: response.error.message || 'No se pudo eliminar el equipo del proyecto.'
+              });
+          } else {
+              Toast.show({
+                  type: 'success',
+                  text1: 'Éxito',
+                  text2: 'Equipo eliminado del proyecto con éxito.'
+              });
+              // Actualizar la lista de miembros del proyecto después de la eliminación
+              setProyMembers(currentMembers => currentMembers.filter(member => member.id !== teamId));
+          }
+      } else {
+          Toast.show({
+              type: 'error',
+              text1: 'Error de Autenticación',
+              text2: 'No se pudo obtener el token de usuario.'
+          });
+      }
+      setLoading(false); // Desactiva el indicador de carga
+  };
+  
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>

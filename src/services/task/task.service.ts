@@ -3,7 +3,9 @@ import {
     UpdateTaskRequest,
     DeleteTask,
     GetTask,
-    FilterTask
+    FilterTask,
+    AddComent,
+    GetComments
 } from '../../types/task/task';
 
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
@@ -123,5 +125,41 @@ export const getTasks = async (queryParams: Omit<FilterTask, 'userId'>, token: s
         return errorResponse;
     }
     const data: GetTask[] = await response.json();
+    return data;
+};
+
+//crear un comentario
+export const addComment = async (commentData: AddComent, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
+    const response = await fetch(`${BASE_URL}/createComment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(commentData)
+    });
+    if (!response.ok) {
+        const errorResponse: ApiResponseError = await response.json();
+        return errorResponse;
+    }
+    const successResponse: ApiResponseSuccess = await response.json();
+    return successResponse;
+};
+
+//obtener los comentarios de una tarea
+export const getComments = async (taskId: number, token: string): Promise<GetComments[] | ApiResponseError> => {
+    const response = await fetch(`${BASE_URL}/getComments/${taskId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorResponse: ApiResponseError = await response.json();
+        return errorResponse;
+    }
+    const data: GetComments[] = await response.json();
     return data;
 };

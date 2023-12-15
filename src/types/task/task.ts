@@ -43,3 +43,16 @@ export interface FilterTask{
     status?: string; 
     myTasks?: boolean;
 }
+
+export interface AddComent{
+    idTask: number;
+    content: string
+}
+
+export interface GetComments{
+    id: number;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    nameCreatedBy: string;
+}

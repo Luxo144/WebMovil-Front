@@ -65,7 +65,7 @@ export const getProjectsOfTeam = async (teamId: number, token: string): Promise<
 
 //remover un equipo de un proyecto
 export const removeTeamFromProject = async (projectTeamData: RemoveTeamFromProject, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
-    const response = await fetch(`${BASE_URL}/remove-team-from-project`, {
+    const response = await fetch(`${BASE_URL}/remove-team`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
