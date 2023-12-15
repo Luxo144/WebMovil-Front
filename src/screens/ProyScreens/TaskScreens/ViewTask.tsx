@@ -1,44 +1,127 @@
-import React,{FC, useState} from 'react';
+import React,{FC, useState,useEffect} from 'react';
 import { View, Text, StyleSheet, ScrollView ,TextInput} from 'react-native';
 import { ProyStackParamList } from '../../../../ParamLists';
 import { StackScreenProps } from '@react-navigation/stack';
-import { Button } from '../../../components';
-import RNPickerSelect from 'react-native-picker-select';
+import { Button, Loader } from '../../../components';
+import { UserProject } from '../../../types/project/project';
+import { Picker } from '@react-native-picker/picker';
+import useIdStore from '../../../services/useIdStore';
+import { getAllMembersProject } from '../../../services/project/project.service';
+import { getTaskById,updateTask } from '../../../services/task/task.service';
+import { getToken } from '../../../services/token.service';
+import Toast from 'react-native-toast-message';
+
 
 type Props = StackScreenProps<ProyStackParamList,"ViewTask">;
 
 const ViewTask:FC<Props> = ({ navigation }) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [responsible, setResponsible] = useState("");
+    const [responsibleId, setResponsibleId] = useState<number|null>(null);
     const [status, setStatus] = useState("Por Hacer");
-  
-    // Tus hooks no editables...
-    const [createdBy] = useState("Nombre del creador");
-    const [startDate] = useState("2023-01-01");
-    const [endDate] = useState("2023-12-31");
-    const [createdAt] = useState("2023-01-01");
-    const [updatedAt] = useState("2023-01-02");
-  
-    
-      const statusOptions = [
-        { label: 'Por Hacer', value: 'Por Hacer' },
-        { label: 'En Curso', value: 'En Curso' },
-        { label: 'Realizada', value: 'Realizada' },
-        // ...otros estados...
-      ];
-      const responsibleOptions = [
-        { label: 'Usuario 1', value: 'usuario1' },
-        { label: 'Usuario 2', value: 'usuario2' },
-        // ...otros valores...
-      ];
 
-    const handleSave = () =>{
-      navigation.goBack();
+    const [members, setMembers] = useState<UserProject[]>([]);
+    const [createdBy,setCreatedBy] = useState("");
+    const [startDate,setStartDate] = useState("");
+    const [endDate,setEndDate] = useState("");
+    const [createdAt,setCreatedAt] = useState("");
+    const [updatedAt,setUpdatedAt] = useState("");
+    
+
+    const projectId = useIdStore(state => state.projectId)
+    const taskId = useIdStore(state => state.taskId);
+    const [loading,setLoading] = useState(false);
+
+    const handleSave = async () =>{
+      if(!name || !description){
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Llene con nombre y descripcion'
+        });
+        return;
+      }
+      if (!responsibleId) return;
+      
+      const TaskData = {
+        name: name|| "",
+        description: description || "",
+        responsibleId,
+        status,
+        comments:"",
+        endDate: endDate || ""
+      }
+
+      try{
+        setLoading(true);
+        const token = await getToken();
+        if (token&&taskId&&responsibleId){
+          const response = await updateTask(TaskData,token,taskId);
+          if ("error" in  response){
+            throw new Error;
+          }else{
+            Toast.show({
+              type: 'succes',
+              text1: 'Exito',
+              text2: 'Tarea actualizada con ezito'
+            });
+            navigation.goBack();
+          }
+        }
+        
+      }catch(error){
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Error al actualizar la tarea'
+        });
+      }finally{
+        setLoading(false);
+      }
+
+      
     }
     const viewComments = () =>{
       //navigation.navigate("ViewComments");
     }
+
+    useEffect(() => {
+      const fetchMembers = async () => {
+      setLoading(true);  
+        if(projectId && taskId){
+          try {
+            const token = await getToken();
+            if (token) { 
+              const response = await getAllMembersProject(projectId, token);
+              const response2 = await getTaskById(taskId,token);
+              if (Array.isArray(response)) {
+                setMembers(response);
+              }
+              if ("error" in response2 ){
+                throw new Error;
+              }else{
+                setName(response2.name);
+                setDescription(response2.description);
+                setResponsibleId(response2.responsibleId);
+                setStatus(response2.status);
+                setCreatedBy(response2.nameCreatedBy);
+                setStartDate(response2.startDate);
+                setEndDate(response2.endDate);
+                setCreatedAt(response2.createdAt);
+                setUpdatedAt(response2.updatedAt);
+              }         
+            } else {
+                console.error("Token is null.");
+            }
+          } catch (error) {
+            console.error('Error al cargar la pagina', error);
+          }
+        }
+        setLoading(false); 
+      };
+  
+      fetchMembers();
+    }, [projectId]);
 
   return (
     <ScrollView style={styles.container}>
@@ -55,17 +138,28 @@ const ViewTask:FC<Props> = ({ navigation }) => {
             placeholder="Descripcion"
         />
         <Button title='Ver comentarios' onPress={viewComments}></Button>
-        <RNPickerSelect
-            onValueChange={(value) => setResponsible(value)}
-            items={responsibleOptions}
-            placeholder={{ label: "Selecciona un encargado", value: null }}
-        />
-        <RNPickerSelect
-            onValueChange={(value) => setStatus(value)}
-            items={statusOptions}
-            value={status}
-            
-         /> 
+
+        <Picker
+          selectedValue={status}
+          onValueChange={(itemValue) => setStatus(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Por Hacer" value="Por Hacer" />
+          <Picker.Item label="En curso" value="En curso" />
+          <Picker.Item label="Realizada" value="Realizada" />
+        </Picker>
+
+        <Picker
+          selectedValue={responsibleId}
+          onValueChange={(itemValue, itemIndex) => setResponsibleId(itemValue)}
+          style={styles.picker}
+          >
+          <Picker.Item label="Seleccione un responsable" value={null} />
+          {members.map((member) => (
+          <Picker.Item key={member.id} label={member.firstName} value={member.id} />
+          ))}
+        </Picker>
+
         
  
         <View style={styles.nonEditableContainer}>
@@ -81,6 +175,7 @@ const ViewTask:FC<Props> = ({ navigation }) => {
             <Text style={styles.nonEditableText}> {updatedAt}</Text>
         </View>
         <Button title='Guardar' onPress={handleSave} />
+        {loading && <Loader />}
     </ScrollView>
   );
 };
