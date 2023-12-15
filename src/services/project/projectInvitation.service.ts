@@ -5,8 +5,10 @@ import{
 } from '../../types/project/projectInvitation';
 
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
+import { API_URL } from '@env';
 
-const BASE_URL = 'http://192.168.117.1:3009/project-invitations';
+
+const BASE_URL = `${API_URL}/project-invitations`;
 
 //crear una invitacion 
 export const createInvitation = async (invitationData: CreateInvitationProject, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {

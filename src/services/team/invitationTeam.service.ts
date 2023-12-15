@@ -4,8 +4,9 @@ import{
 } from '../../types/team/invitationTeam';
 
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
+import { API_URL } from '@env';
 
-const BASE_URL = 'http://192.168.117.1:3009/invitation';
+const BASE_URL = `${API_URL}/invitation`;
 
 //crear una invitación
 export const createInvitation = async (invitationData: CreateInvitationRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {

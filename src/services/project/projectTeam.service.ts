@@ -6,8 +6,8 @@ import {
 } from '../../types/project/projectTeam';
 
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
-
-const BASE_URL = 'http://192.168.117.1:3009/project-team'
+import { API_URL } from '@env';
+const BASE_URL = `${API_URL}/project-team`;
 
 //asignar un equipo a un proyecto
 export const assignTeamToProject = async (projectTeamData: ProjectTeamAssign, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {

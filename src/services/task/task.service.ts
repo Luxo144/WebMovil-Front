@@ -9,8 +9,9 @@ import {
 } from '../../types/task/task';
 
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
+import { API_URL } from '@env';
 
-const BASE_URL = 'http://192.168.117.1:3009/tasks';
+const BASE_URL = `${API_URL}/tasks`;
 
 //crear una tarea
 export const createTask = async (taskData: CreateTaskRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
@@ -86,7 +87,7 @@ export const updateTask = async (taskData: UpdateTaskRequest, token: string, idT
 
 //eliminar una tarea
 export const deleteTask = async (taskData: DeleteTask, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
-    const response = await fetch(`${BASE_URL}/delete-task`, {
+    const response = await fetch(`${BASE_URL}/delete`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

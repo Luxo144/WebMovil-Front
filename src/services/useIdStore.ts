@@ -26,14 +26,14 @@ interface IdState {
   projectId: number | null;
   memberId: number | null;
   taskId: number | null;
-  codeTeam: number | null;
+  codeTeam: string | null;
 
   setUserId: (userId: number) => void;
   setTeamId: (teamId: number) => void;
   setProjectId: (projectId: number) => void;
   setMemberId: (memberId: number) => void;
   setTaskId: (taskId: number) => void;
-  setCodeTeam: (codeTeam: number) => void;
+  setCodeTeam: (codeTeam: string) => void;
 
   clearIds: () => void;
 }

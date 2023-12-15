@@ -10,7 +10,9 @@ import {
 } from '../../types/auth/user';
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
 import { storeToken, getToken, removeToken } from '../token.service';
-const BASE_URL = "http://192.168.117.1:3009/auth";
+import { API_URL } from '@env';
+
+const BASE_URL = `${API_URL}/auth`;
 
 
 //register

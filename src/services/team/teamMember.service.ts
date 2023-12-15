@@ -7,8 +7,10 @@ import {
 import {
     Teams
 } from '../../types/team/teams';
+import { API_URL } from '@env';
 
-const BASE_URL = 'http://192.168.117.1:3009/members';
+const BASE_URL = `${API_URL}/members`;
+
 //agregan un miembro a un equipo no deberia ocuparse
 export const addMember = async (memberData: UpdateMemberRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/add-member`, {

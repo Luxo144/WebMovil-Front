@@ -7,8 +7,9 @@ import{
 } from '../../types/project/project';
 
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
+import { API_URL } from '@env';
 
-const BASE_URL = 'http://192.168.117.1:3009/projects'
+const BASE_URL = `${API_URL}/projects`;
 
 //crear un proyecto
 export const createProject = async (projectData: CreateProjectRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {

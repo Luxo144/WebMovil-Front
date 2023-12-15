@@ -4,8 +4,10 @@ import { CreateTeamRequest,
     Teams 
     } from '../../types/team/teams';
 import { ApiResponseSuccess, ApiResponseError,} from '../../types/genericAnswer';
+import { API_URL } from '@env';
 
-const BASE_URL = 'http://192.168.117.1:3009/teams';
+const BASE_URL = `${API_URL}/teams`;
+
 //crear un equipo
 export const createTeam = async (teamData: CreateTeamRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/create-team`, {
