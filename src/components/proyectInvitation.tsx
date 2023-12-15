@@ -6,8 +6,16 @@ interface ProyInvitationData{
   id: number;
   status: string;
   invitationDate: string;
-  nameProject: string;
-  codeProject: string;
+  project: Proyect;
+}
+
+interface Proyect{
+  code: string;
+  createdAt: string;
+  createdByUserId: number;
+  description: string;
+  id: number;
+  name: string;
 }
 
 interface InvitationProps {
@@ -20,9 +28,9 @@ const ProyInvitation:React.FC<InvitationProps> = ({ inv,onAccept,onDecline }) =>
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
-          <Text style={styles.teamName}>{inv.id}</Text>
+          <Text style={styles.teamName}>{inv.project.name + " "+ inv.project.code}</Text>
           <Text>Te ha invitado a su proyecto</Text>
-          <Text>Invitado el: {inv.invitationDate}</Text>
+          <Text>Invitado el: {inv.invitationDate.split('T')[0]}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={() => onAccept(inv.id)}>

@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 import useIdStore from '../../services/useIdStore';
 import { InvitationProject } from '../../types/project/projectInvitation';
 import { Loader } from '../../components';
+import { responseInvitation } from '../../services/project/projectInvitation.service';
 
 type Props = StackScreenProps<TeamStackParamList,"ProyInvitationScreen">
 
@@ -18,13 +19,60 @@ const ProyInvitationScreen: FC<Props> = () => {
     const [loading, setLoading] = useState(false);
     const teamCode = useIdStore(state => state.codeTeam);
 
-    const handleAccept = (invId:number) => {
-       
-    };
+    const handleAccept = async (invId: number) => {
+      setLoading(true);
+      const token = await getToken();
+      if (token) {
+          const response = await responseInvitation({ idInvitation: invId, response: 'ACCEPTED' }, token);
+          console.log(response);
+          if ('error' in response) {
+              Toast.show({
+                  type: 'error',
+                  text1: 'Error',
+                  text2: response.error.message || 'Error al aceptar la invitación.'
+              });
+          } else {
+              Toast.show({
+                  type: 'success',
+                  text1: 'Éxito',
+                  text2: 'Invitación aceptada con éxito.'
+              });
+              // Actualizar la lista de invitaciones
+              setProyInvitations(currentInvitations => 
+                  currentInvitations.filter(invitation => invitation.id !== invId)
+              );
+          }
+      }
+      setLoading(false);
+  };
 
-    const handleDecline = (invId:number) => {
-        
+  const handleDecline = async (invId: number) => {
+    setLoading(true);
+    const token = await getToken();
+    if (token) {
+        const response = await responseInvitation({ idInvitation: invId, response: 'REJECTED' }, token);
+        console.log(response);
+        if ('error' in response) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: response.error.message || 'Error al rechazar la invitación.'
+            });
+        } else {
+            Toast.show({
+                type: 'success',
+                text1: 'Éxito',
+                text2: 'Invitación rechazada con éxito.'
+            });
+            // Actualizar la lista de invitaciones
+            setProyInvitations(currentInvitations => 
+                currentInvitations.filter(invitation => invitation.id !== invId)
+            );
+        }
     }
+    setLoading(false);
+};
+
 
     useEffect(() => {
       const loadInvitations = async () => {
@@ -32,6 +80,7 @@ const ProyInvitationScreen: FC<Props> = () => {
         const token = await getToken();
         if (token && teamCode) {
           const response = await getAllInvitationsTeam(teamCode, token);
+          console.log(response);
           if (!Array.isArray(response)) {
             console.log(response);
             setLoading(false);

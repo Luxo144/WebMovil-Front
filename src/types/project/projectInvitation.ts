@@ -14,6 +14,13 @@ export interface InvitationProject {
     id: number;
     status: string;
     invitationDate: string;
-    nameProject: string;
-    codeProject: string;
+    project: Proyect;
 }
+interface Proyect{
+    code: string;
+    createdAt: string;
+    createdByUserId: number;
+    description: string;
+    id: number;
+    name: string;
+  }

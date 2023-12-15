@@ -76,6 +76,7 @@ export const deleteMember = async (memberData: DeleteMemberRequest, token: strin
     const successResponse: ApiResponseSuccess = await response.json();
     return successResponse;
 }
+
 //obtener todos los equipos de un usuario
 export const getAllTeamsOfUser = async (token: string): Promise<Teams[] | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/get-teams-user/`, {

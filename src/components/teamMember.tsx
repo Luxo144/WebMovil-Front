@@ -6,23 +6,26 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 interface teamMember{
-    id: string;
-    name: string;
-    role: string;
+  id : number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  nickname: string;
+  roleName: string;
 }
 
 interface memberProps{
     member: teamMember;
-    onEdit: (memberId:string) => void;
-    onDelete: (memberId:string) => void;
+    onEdit: (memberId:number) => void;
+    onDelete: (memberId:number) => void;
 }
 
 const TeamMember:React.FC<memberProps> = ({ member,onEdit,onDelete }) =>{
     return (
         <View style={styles.container}>
         <View style={styles.infoContainer}>
-          <Text style={styles.memberName}>{member.name}</Text>
-          <Text>{member.role}</Text>
+          <Text style={styles.memberName}>{member.firstName}</Text>
+          <Text>{member.roleName}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={() => onEdit(member.id)}>

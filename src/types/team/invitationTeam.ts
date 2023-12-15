@@ -1,6 +1,6 @@
 export interface CreateInvitationRequest {
     teamId: number;
-    emailInvitedUser: number;
+    emailInvitedUser: string;
   }
   
 

@@ -57,7 +57,7 @@ const ViewTeamScreen:FC<Props> = ({route, navigation}) => {
                                     text1: 'Éxito',
                                     text2: response.message
                                 });
-                                // Aquí puedes navegar de vuelta o actualizar la lista de equipos
+                                navigation.navigate('TeamScreen');
                             }
                         }
                         setLoading(false);

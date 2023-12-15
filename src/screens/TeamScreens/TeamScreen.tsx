@@ -23,13 +23,19 @@ const TeamScreen: FC<Props> = ({ navigation }) => {
   };
 
   useFocusEffect(
+    
     React.useCallback(() => {
+      let isActive = true;
+      console.log('useFocusEffect')
       const loadTeams = async () => {
+        if (!isActive) return;
         setLoading(true);
         try {
           const token = await getToken();
+          setTeams([]);
           if (token) {
             const response = await getAllTeamsOfUser(token);
+            console.log(response);
             if (!Array.isArray(response)) {
               console.log(response);
               return;
@@ -39,14 +45,17 @@ const TeamScreen: FC<Props> = ({ navigation }) => {
         } catch (error) {
           console.log(error);
         } finally {
-          setLoading(false);
+          if (isActive) setLoading(false);
         }
       };
-
+  
       loadTeams();
-      return () => {}; 
+      return () => {
+        isActive = false;
+      };
     }, [])
   );
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
