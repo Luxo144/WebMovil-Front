@@ -43,7 +43,7 @@ const getBackgroundColor = (status:string) => {
   switch (status) {
     case 'En curso':
       return '#f0ad4e'; // Amarillo
-    case 'Por hacer':
+    case 'Por Hacer':
       return '#5bc0de'; // Azul
     case 'Realizada':
       return '#5cb85c'; // Verde

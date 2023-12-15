@@ -76,28 +76,41 @@ const ProyMembersScreen: FC<Props> = ({ navigation }) => {
   };
   
 
-    return (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-            {loading ? (
-                <Loader />
-            ) : (
-                <>
-                    <FlatList
-                        data={proyMembers}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <ProyMember
-                                team={item}
-                                onDelete={() => handleDelete(item.id)}
-                            />
-                        )}
+  return (
+    <View style={styles.container}>
+        {loading ? (
+            <Loader />
+        ) : proyMembers.length > 0 ? (
+            <FlatList
+                data={proyMembers}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <ProyMember
+                        team={item}
+                        onDelete={() => handleDelete(item.id)}
                     />
-                </>
-            )}
-        </View>
-    );
+                )}
+            />
+        ) : (
+            <Text style={styles.emptyMessage}>No hay equipos en este proyecto.</Text>
+        )}
+    </View>
+);
 };
-
-
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      backgroundColor: 'white'
+  },
+  emptyMessage: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      fontSize: 16,
+      marginTop: 50 // Ajusta este valor según sea necesario
+  },
+  // ...resto de tus estilos
+});
 
 export default ProyMembersScreen;

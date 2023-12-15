@@ -21,19 +21,19 @@ const useIdStore = create<IdState>(set => ({
 export default useIdStore;
 
 interface IdState {
-  userId: string | null;
+  userId: number | null;
   teamId: number | null;
   projectId: number | null;
-  memberId: string | null;
-  taskId: string | null;
-  codeTeam: string | null;
+  memberId: number | null;
+  taskId: number | null;
+  codeTeam: number | null;
 
-  setUserId: (userId: string) => void;
+  setUserId: (userId: number) => void;
   setTeamId: (teamId: number) => void;
   setProjectId: (projectId: number) => void;
-  setMemberId: (memberId: string) => void;
-  setTaskId: (taskId: string) => void;
-  setCodeTeam: (codeTeam: string) => void;
+  setMemberId: (memberId: number) => void;
+  setTaskId: (taskId: number) => void;
+  setCodeTeam: (codeTeam: number) => void;
 
   clearIds: () => void;
 }

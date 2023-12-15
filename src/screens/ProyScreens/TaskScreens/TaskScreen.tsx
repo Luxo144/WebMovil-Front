@@ -30,8 +30,11 @@ const TasksScreen:FC<Props> = ({navigation}) => {
         try {
           setLoading(true);
           const token = await getToken();
+          console.log("token", token);
+          console.log("projectId", projectId);
           if(token && projectId){
             const response = await getAllTasks(projectId,token);
+            console.log(response);
             if("error" in response){
               throw new Error;
             }
@@ -49,10 +52,10 @@ const TasksScreen:FC<Props> = ({navigation}) => {
   );
 
   const handleAdd = () =>{
-    if(selectedTaskId){
-      setTaskId(selectedTaskId);
+    
+    console.log("selectedTaskId",selectedTaskId);
     navigation.navigate("AddTask");
-    }
+    
   }
   const handleViewTask = () => {
     navigation.navigate("ViewTask");
