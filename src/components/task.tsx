@@ -6,9 +6,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 interface TaskData{
     id: number;
     name: string;
-    createdBy: string;
+    nameCreatedBy: string;
     status: string;
-    creationDate: string;
+    createdAt: string;
 }
 
 interface TaskProps {
@@ -24,8 +24,8 @@ const Task:React.FC<TaskProps> = ({ task, onView, onDelete }) => {
   return (
     <View style={[styles.taskContainer, { backgroundColor }]}>
       <Text style={styles.taskName}>{task.name}</Text>
-      <Text>Creado por: {task.createdBy}</Text>
-      <Text>Fecha de Creación: {task.creationDate}</Text>
+      <Text>Creado por: {task.nameCreatedBy}</Text>
+      <Text>Fecha de Creación: {task.createdAt}</Text>
       <Text>Estado: {task.status}</Text>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity onPress={() => onView()}>
