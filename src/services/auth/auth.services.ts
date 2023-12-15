@@ -170,3 +170,15 @@ export const resetPassword = async (resetData: ResetPasswordDto): Promise<ApiRes
   const data = await response.json() as ApiResponseSuccess | ApiResponseError;
   return data;
 };
+
+export const verifyToken = async (token: string): Promise<ApiResponseError | ApiResponseSuccess> => {
+  const response = await fetch(`${BASE_URL}/verify-token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token }),
+  });
+  const data = await response.json() as ApiResponseSuccess | ApiResponseError;
+  return data;
+}

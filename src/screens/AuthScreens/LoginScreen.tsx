@@ -1,13 +1,14 @@
-import React, { FC, useState,useContext } from 'react';
+import React, { FC, useState,useContext, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input, Loader ,Button} from '../../components';
-import { login } from '../../services/auth/auth.services';
+import { login, verifyToken } from '../../services/auth/auth.services';
 import { StackScreenProps } from '@react-navigation/stack';
 import {AuthStackParamList} from '../../../ParamLists'
 import AuthContext from '../../navigation/AuthContext';
 import Toast from 'react-native-toast-message';
-import { responseInvitation } from '../../services/project/projectInvitation.service';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getToken } from '../../services/token.service';
 
 type Props = StackScreenProps<AuthStackParamList,"LoginScreen">;
 
@@ -21,6 +22,31 @@ const LoginScreen: FC<Props> = ({navigation}) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  useEffect(() => {
+    const verificarTokenAlCargar = async () => {
+      try {
+        const token = await getToken();
+
+        if (token) {
+          const response = await verifyToken(token);
+          console.log(response);
+          if (response){
+            setUser(true);
+          }
+
+          
+        } else {
+        }
+      } catch (error) {
+        console.error('Error al verificar el token al cargar la aplicación:', error);
+      }
+    };
+
+    verificarTokenAlCargar();
+  }, []);
+
+
 
   const isValidPassword = (password: string) => {
     

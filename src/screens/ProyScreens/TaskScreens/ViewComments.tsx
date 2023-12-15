@@ -32,13 +32,20 @@ const ViewComments: FC<Props> = ({navigation}) => {
         const token = await getToken();
         if (token&&taskId){
             const response = await getComments(taskId,token); 
+            console.log(response);
             if('error' in response){
-                throw new Error;
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error',
+                    text2: response.error.message
+                  });
+            }else{
+                setComments(response);
             }
-            setComments(response);
-        }
-
-      } catch (error) {
+            
+            console.log(response);
+          }
+        } catch (error) {
         console.error('Error al cargar los comentarios:', error);
       }
     };

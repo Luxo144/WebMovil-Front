@@ -33,7 +33,7 @@ export const createTask = async (taskData: CreateTaskRequest, token: string): Pr
 
 //obtener tarea por id
 export const getTaskById = async (taskId: number, token: string): Promise<GetTask | ApiResponseError> => {
-    const response = await fetch(`${BASE_URL}/get-task/${taskId}`, {
+    const response = await fetch(`${BASE_URL}/${taskId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

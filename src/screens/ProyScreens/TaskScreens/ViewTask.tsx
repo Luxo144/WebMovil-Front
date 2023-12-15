@@ -43,13 +43,13 @@ const ViewTask:FC<Props> = ({ navigation }) => {
       }
       
       const TaskData = {
-  name: name || "",
-  description: description || "",
-  responsibleId: responsibleId ?? undefined, 
-  status,
-  comments: "",
-  endDate: endDate || ""
-};
+      name: name || "",
+      description: description || "",
+      responsibleId: responsibleId ?? undefined, 
+      status,
+      comments: "",
+      endDate: endDate || ""
+    };
 
       try{
         setLoading(true);
@@ -85,7 +85,7 @@ const ViewTask:FC<Props> = ({ navigation }) => {
       
     }
     const viewComments = () =>{
-      //navigation.navigate("ViewComments");
+      navigation.navigate("ViewComments");
     }
 
     useEffect(() => {
