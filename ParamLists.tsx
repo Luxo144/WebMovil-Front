@@ -35,5 +35,6 @@ export type ProyStackParamList = {
     ViewTask:undefined;
     AddTask:undefined;
     InvTeamScreen: undefined;
+    ViewComments:undefined;
 
 }

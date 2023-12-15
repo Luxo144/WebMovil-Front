@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ProfileScreen,EditProfileScreen} from "../screens/ProfileScreens";
 import {AddTeamScreen,EditTeamScreen,ViewTeamScreen,ProyInvitationScreen,
 TeamMembersScreen,AddMemberScreen,TeamInvitationScreen,TeamScreen,EditMemberScreen} from "../screens/TeamScreens";
-import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask,InvTeamScreen} from "../screens/ProyScreens";
+import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask,InvTeamScreen,ViewComments} from "../screens/ProyScreens";
 
 
 
@@ -235,6 +235,12 @@ const ProyStackScreen:FC = () =>{
             <ProyStack.Screen
                 name="InvTeamScreen"
                 component={InvTeamScreen}
+                options={{
+                title: 'Crear tarea',
+            }}/>
+            <ProyStack.Screen
+                name="ViewComments"
+                component={ViewComments}
                 options={{
                 title: 'Crear tarea',
             }}/>
