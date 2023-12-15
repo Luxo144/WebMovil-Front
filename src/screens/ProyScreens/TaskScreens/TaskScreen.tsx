@@ -1,8 +1,10 @@
 import React, { useState, FC } from 'react';
 import { View, FlatList, Switch,StyleSheet ,Text} from 'react-native';
 import Task from '../../../components/task'; 
+import { Loader,Button } from '../../../components';
 import { ProyStackParamList } from '../../../../ParamLists';
 import { StackScreenProps } from '@react-navigation/stack';
+import ConfirmationModal from '../../../components/confirmationModal';
 
 
 type Props = StackScreenProps<ProyStackParamList,"TaskScreen">;
@@ -49,9 +51,24 @@ const TasksScreen:FC<Props> = ({navigation}) => {
   const [tasks, setTasks] = useState(tasksData);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const toggleSwitch = () => setIsSwitchEnabled(previousState => !previousState);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
+  const handleAdd = () =>{
+    
+  }
   const handleViewTask = () => {
+    navigation.navigate("ViewTask");
+  };
 
+  const handleDeletePress = (taskId:number) => {
+    setSelectedTaskId(taskId);
+    setModalVisible(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setTasks(tasks.filter(task => task.id !== selectedTaskId));
+    setModalVisible(false);
   };
 
   const handleDeleteTask = (taskId:number) => {
@@ -62,7 +79,7 @@ const TasksScreen:FC<Props> = ({navigation}) => {
   return (
     <View style={{ flex: 1 }}>
         <View style={styles.switchContainer}>
-        <Text>{isSwitchEnabled ? 'Modo Especial Activado' : 'Modo Especial Desactivado'}</Text>
+        <Text>{isSwitchEnabled ? 'Mis Tareas' : 'Todas las tareas'}</Text>
         <Switch
           onValueChange={toggleSwitch}
           value={isSwitchEnabled}
@@ -75,9 +92,16 @@ const TasksScreen:FC<Props> = ({navigation}) => {
           <Task
             task={item}
             onView={handleViewTask}
-            onDelete={handleDeleteTask}
+            onDelete={handleDeletePress}
           />
         )}
+      />
+      <Button title='Agregar tarea' onPress={handleAdd}/>
+      <ConfirmationModal
+        visible={modalVisible}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setModalVisible(false)}
+        type='tarea'
       />
     </View>
   );

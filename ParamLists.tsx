@@ -30,4 +30,6 @@ export type ProyStackParamList = {
     EditProyScreen: undefined;
     AddProyScreen: undefined;
     TaskScreen:undefined;
+    ViewTask:undefined;
+    AddTask:undefined;
 }

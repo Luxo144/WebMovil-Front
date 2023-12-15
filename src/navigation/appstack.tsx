@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ProfileScreen,EditProfileScreen} from "../screens/ProfileScreens";
 import {AddTeamScreen,EditTeamScreen,ViewTeamScreen,ProyInvitationScreen,
 TeamMembersScreen,AddMemberScreen,TeamInvitationScreen,TeamScreen} from "../screens/TeamScreens";
-import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen,TasksScreen} from "../screens/ProyScreens";
+import {ProyectsScreen,EditProyScreen,ProyMembersScreen,AddProyScreen,ViewProyectScreen,TasksScreen,ViewTask,AddTask} from "../screens/ProyScreens";
 
 
 
@@ -24,7 +24,7 @@ const ProyStack = createStackNavigator<ProyStackParamList>();
 const AppTab:FC = () => {
     return (
         <Tab.Navigator
-            initialRouteName="TeamScreen"
+            initialRouteName="TeamScreenStack"
             screenOptions={{
             tabBarActiveTintColor: 'purple',
             headerShown: false
@@ -32,7 +32,7 @@ const AppTab:FC = () => {
         }}
         >
             <Tab.Screen 
-            name = "TeamScreen" 
+            name = "TeamScreenStack" 
             component={TeamStackScreen}
             options={{
                 tabBarLabel:'Equipos',
@@ -42,7 +42,7 @@ const AppTab:FC = () => {
             }}/>
                         
             <Tab.Screen
-             name = "ProyectsScreen"
+             name = "ProyectsScreenStack"
              component={ProyStackScreen}
              options={{
                 tabBarLabel:'Proyectos',
@@ -51,7 +51,7 @@ const AppTab:FC = () => {
                 ),}}/>
 
             <Tab.Screen
-             name = "ProfileScreen"
+             name = "ProfileScreenStack"
              component={ProfileStackScreen}
              options={{
                 tabBarLabel:'Perfil',
@@ -213,6 +213,18 @@ const ProyStackScreen:FC = () =>{
                 component={TasksScreen}
                 options={{
                 title: 'Tareas',
+            }}/>
+            <ProyStack.Screen
+                name="ViewTask"
+                component={ViewTask}
+                options={{
+                title: 'Info Tarea',
+            }}/>
+            <ProyStack.Screen
+                name="AddTask"
+                component={AddTask}
+                options={{
+                title: 'Crear tarea',
             }}/>
 
         </ProyStack.Navigator>
