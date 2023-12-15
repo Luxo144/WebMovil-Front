@@ -1,21 +1,65 @@
-import React, { useState, useEffect,FC } from 'react';
+import React, { useState, useEffect,FC, useId } from 'react';
 import { View, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { StackScreenProps } from '@react-navigation/stack';
 import { ProyStackParamList } from '../../../ParamLists';
+import useIdStore from '../../services/useIdStore';
+import { getToken } from '../../services/token.service';
+import Toast from 'react-native-toast-message';
+import { updateProject } from '../../services/project/project.service';
 
 type Props = StackScreenProps<ProyStackParamList,"EditProyScreen">;
 
 
 
-const EditProyScreen:FC<Props> = () =>{
+const EditProyScreen:FC<Props> = ({ navigation}) =>{
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const projectId = useIdStore(state => state.projectId);
 
-    const handleEdit = () => {
+    const handleEdit = async () => {
+      if (!name || !description) {
+          Toast.show({
+              type: 'error',
+              text1: 'Validación',
+              text2: 'Todos los campos son obligatorios.'
+          });
+          return;
+      }
 
-    };
+      const token = await getToken();
+      if (token && projectId) {
+          const projectData = {
+              idProject: projectId,
+              name: name,
+              description: description,
+          };
+
+          const response = await updateProject(projectData, token);
+          console.log(response);
+          if ('error' in response) {
+              Toast.show({
+                  type: 'error',
+                  text1: 'Error',
+                  text2: response.error.message || 'No se pudo actualizar el proyecto.'
+              });
+          } else {
+              Toast.show({
+                  type: 'success',
+                  text1: 'Éxito',
+                  text2: 'Proyecto actualizado con éxito.'
+              });
+              navigation.goBack();
+          }
+      } else {
+          Toast.show({
+              type: 'error',
+              text1: 'Error de Autenticación',
+              text2: 'No se pudo obtener el token de usuario.'
+          });
+      }
+  };
 
     return (
         <ScrollView style={styles.container}>

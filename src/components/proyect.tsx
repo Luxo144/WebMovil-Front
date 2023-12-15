@@ -3,16 +3,18 @@ import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface ProyectData{
-    id: string;
-    name: string;
-    description: string;
-    date: string;
-    ownerId: string;
+  id: number;
+  name: string;
+  description: string;
+  code: string;
+  createdByUserId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface ProyectProps{
     proyect: ProyectData;
-    onView: (ProyId: string) => void;
+    onView: (ProyId: number) => void;
   
 }
 
@@ -20,9 +22,9 @@ const Proyect:React.FC<ProyectProps> = ({ proyect,onView }) => {
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
-          <Text style={styles.teamName}>{proyect.name}</Text>
+          <Text style={styles.teamName}>{proyect.name + " " + proyect.code}</Text>
           <Text>{proyect.description}</Text>
-          <Text>Creado el: {proyect.date}</Text>
+          <Text>Creado el: {proyect.createdAt}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={() => onView(proyect.id)}>

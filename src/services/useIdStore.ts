@@ -23,14 +23,14 @@ export default useIdStore;
 interface IdState {
   userId: string | null;
   teamId: number | null;
-  projectId: string | null;
+  projectId: number | null;
   memberId: string | null;
   taskId: string | null;
   codeTeam: string | null;
 
   setUserId: (userId: string) => void;
   setTeamId: (teamId: number) => void;
-  setProjectId: (projectId: string) => void;
+  setProjectId: (projectId: number) => void;
   setMemberId: (memberId: string) => void;
   setTaskId: (taskId: string) => void;
   setCodeTeam: (codeTeam: string) => void;

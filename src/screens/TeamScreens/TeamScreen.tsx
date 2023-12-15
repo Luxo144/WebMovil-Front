@@ -77,7 +77,9 @@ const TeamScreen: FC<Props> = ({ navigation }) => {
           <Text>No tienes equipos asignados.</Text>
         </View>
       )}
+      <View style={styles.addButtonContainer}>
       <Button title="Crear equipo" onPress={() => navigation.navigate('AddTeamScreen')} />
+      </View>
     </View>
   );
 };
@@ -88,6 +90,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  addButtonContainer: {
+    position: 'absolute', 
+    bottom: 0,
+    left: 0, 
+    right: 0, 
+    backgroundColor: 'transparent', 
+    padding: 10, 
+  },
+
+  
 
 });
 

@@ -32,4 +32,5 @@ export type ProyStackParamList = {
     TaskScreen:undefined;
     ViewTask:undefined;
     AddTask:undefined;
+
 }

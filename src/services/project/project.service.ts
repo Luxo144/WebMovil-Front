@@ -87,7 +87,7 @@ export const getProjectsByOwner = async (token: string): Promise<Project[] | Api
 //actualizar un proyecto
 export const updateProject = async (projectData: UpdateProjectRequest, token: string): Promise<ApiResponseSuccess | ApiResponseError> => {
     const response = await fetch(`${BASE_URL}/update-project`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
