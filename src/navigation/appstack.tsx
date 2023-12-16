@@ -171,7 +171,7 @@ const TeamStackScreen:FC = () =>{
                 name="EditMemberScreen"
                 component={EditMemberScreen}
                 options={{
-                title: 'Añadir miembro',
+                title: 'Editar miembro',
             }}/>
             
 
@@ -236,7 +236,7 @@ const ProyStackScreen:FC = () =>{
                 name="InvTeamScreen"
                 component={InvTeamScreen}
                 options={{
-                title: 'Crear tarea',
+                title: 'Invitar equipos',
             }}/>
             <ProyStack.Screen
                 name="ViewComments"
